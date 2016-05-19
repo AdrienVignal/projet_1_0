@@ -6,23 +6,42 @@ LiteraleManager::Handler LiteraleManager::handler=LiteraleManager::Handler();
 
 LiteraleManager& LiteraleManager::getInstance(){
     if (handler.instance==0) {
-
         handler.instance=new LiteraleManager;
         handler.instance->initmap();
     }
 	return *handler.instance;
 }
 
-void LiteraleManager::libererInstance(){
 
+
+Controleur* Controleur::getInstance(){
+    return handlerC.instance;
+}
+
+void Controleur::libererInstance(){
+    delete(handlerC.instance) ;
+    handlerC.instance=0;
+}
+
+Controleur::HandlerC Controleur::handlerC=Controleur::HandlerC();
+
+Controleur* Controleur::getInstance(LiteraleManager& m, Pile& v){
+    if (handlerC.instance==0) {
+        handlerC.instance=new Controleur( m,  v);
+        handlerC.instance->initFonct();
+    }
+    return handlerC.instance;
+}
+
+
+
+void LiteraleManager::libererInstance(){
+    delete(handler.instance) ;
     handler.instance=0;
 }
 
-/*
-QString  Entier::toString() const {
-    return QString::number(value);
-}
-*/
+
+
 
 Attributs Literale::operator+(const Literale&  L) {
     Attributs A1 = this->getValue() ;
@@ -80,27 +99,18 @@ Attributs Literale::operator/(Literale const& L) {
             A3 = Attributs((A1.num * (double) A2.denom )/((double) A1.denom * A2.num),1 ) ;
         else A3 = Attributs(A1.num * (double) A2.denom ,(double) A1.denom * A2.num ) ;
     }
-    else {
-        //if ( (floor(((double) A2.num / A2.denom) * ((double) A2.num / A2.denom) ) == (((double) A2.num / A2.denom) * ((double) A2.num / A2.denom) )) &&
-             //(floor(((double) A2.ImNum / A2.ImDenom) * ((double) A2.ImNum / A2.ImDenom) ) == (((double) A2.ImNum / A2.ImDenom) * ((double) A2.ImNum / A2.ImDenom) )))
-        if ((floor (A2.num * A2.num) == (A2.num * A2.num)) &&(floor (A2.ImNum * A2.ImNum) == (A2.ImNum * A2.ImNum)))
-            /*
-            A3 = Attributs ( ((double)(A1.num * A2.num) / (A1.denom * A2.denom))   +  ((double) (A1.ImNum * A2.ImNum) / (A1.ImDenom * A2.ImDenom)) ,
-                             ((double) A2.num / A2.denom) * ((double) A2.num / A2.denom) ,
-                             ((double) (A1.ImNum * A2.num) /( A1.ImDenom * A2.denom)) -( (double)  (A1.num * A2.ImNum)  / (A1.denom * A2.ImDenom)) ,
-                             ((double) A2.num / A2.denom) * ((double) A2.num / A2.denom) ) ;
-                             */
+    else {     
+        if ((floor (A2.num * A2.num) == (A2.num * A2.num)) &&(floor (A2.ImNum * A2.ImNum) == (A2.ImNum * A2.ImNum)))                      
             A3 = Attributs ( (((double)(A1.num * A2.num) / (A1.denom * A2.denom))   +  ((double) (A1.ImNum * A2.ImNum) / (A1.ImDenom * A2.ImDenom))) * (A2.denom * A2.denom * A2.ImDenom * A2.ImDenom) ,
                              A2.num * A2.num * A2.ImDenom *A2.ImDenom + A2.denom * A2.denom * A2.ImNum *A2.ImNum ,
                              (((double) (A1.ImNum * A2.num) /( A1.ImDenom * A2.denom)) -( (double)  (A1.num * A2.ImNum)  / (A1.denom * A2.ImDenom))) * (A2.denom * A2.denom * A2.ImDenom * A2.ImDenom),
                              A2.num * A2.num * A2.ImDenom *A2.ImDenom + A2.denom * A2.denom * A2.ImNum *A2.ImNum  ) ;
         else
-            A3 = Attributs ( ((double)(A1.num * A2.num) / (A1.denom * A2.denom))   +  ((double) (A1.ImNum * A2.ImNum) / (A1.ImDenom * A2.ImDenom)) ,
-                             ((double) A2.num / A2.denom) * ((double) A2.num / A2.denom) + ((double) A2.ImNum / A2.ImDenom) * ((double) A2.ImNum / A2.ImDenom) ,
-                             ((double) (A1.ImNum * A2.num) /( A1.ImDenom * A2.denom)) -( (double)  (A1.num * A2.ImNum)  / (A1.denom * A2.ImDenom)) ,
-                             ((double) A2.num / A2.denom) * ((double) A2.num / A2.denom) + ((double) A2.ImNum / A2.ImDenom) * ((double) A2.ImNum / A2.ImDenom) ) ;
+            A3 = Attributs ( (double) (((double)(A1.num * A2.num) / (A1.denom * A2.denom))   +  ((double) (A1.ImNum * A2.ImNum) / (A1.ImDenom * A2.ImDenom))) /
+                             (double) (((double) A2.num / A2.denom) * ((double) A2.num / A2.denom) + ((double) A2.ImNum / A2.ImDenom) * ((double) A2.ImNum / A2.ImDenom)) , 1 ,
+                             (double) (((double) (A1.ImNum * A2.num) /( A1.ImDenom * A2.denom)) -( (double)  (A1.num * A2.ImNum)  / (A1.denom * A2.ImDenom))) /
+                             (double) (((double) A2.num / A2.denom) * ((double) A2.num / A2.denom) + ((double) A2.ImNum / A2.ImDenom) * ((double) A2.ImNum / A2.ImDenom)) , 1 );
     }
-
     if (floor(A3.num)!= A3.num)
     A3 = Attributs( (double) A3.num/A3.denom ,1, A3.ImNum , A3.ImDenom)   ;
     if (floor(A3.ImNum)!= A3.ImNum)
@@ -220,7 +230,7 @@ int LiteraleManager::choix_type(QString s) {
     if(s.contains(rFrac)) return 3 ;
     QRegExp rReel("^(\\d+)\\.(\\d+)$");
     if(s.contains(rReel)) return 2 ;
-    QRegExp rIm("^\\d+(.\\d+)?\\$\\d+(.\\d+)?$");
+    QRegExp rIm("^\\d+((\\.|/)\\d+)?\\$\\d+((\\.|/)\\d+)?$");
     if(s.contains(rIm)) return 4 ;
 
 }
@@ -245,6 +255,52 @@ void LiteraleManager::initmap() {
 
 Literale& LiteraleManager::addLit(QString s) {
     int i = choix_type(s) ;
+
+    if (i == 4) {
+        QString Re , Im ;
+        QRegExp rx("\\d+((\\.\\d+)|(/\\d+))?\\$");
+        QRegExp rx2("\\$0+($|/|(\\.0+$))");
+        s.contains(rx) ;
+        Re = rx.cap(0) ;
+        Re.remove(Re.size()-1, 1) ;
+        if (s.contains(rx2)) {
+            s = Re ;
+            i = choix_type(s) ;
+        }
+
+    }
+
+    if (i == 2) {
+        double d = s.toDouble() ;
+        if (floor(d) == d) {
+            i = 1 ;
+            QRegExp rx("(\\d+)");
+            s.contains(rx) ;
+            s  = rx.cap(0) ;
+        }
+    }
+
+    if (i == 3) {
+        QString numStr , denomStr ;
+        QRegExp rx("(\\d+)");
+        QRegExp rx2("(/\\d+)");
+        s.contains(rx) ;
+        s.contains(rx2) ;
+        numStr = rx.cap(1) ;
+        denomStr = rx2.cap(1) ;
+        denomStr.remove(0,1) ;
+        int num  = numStr.toInt() ;
+        int denom = denomStr.toInt() ;
+        Attributs A = Attributs (num , denom) ;
+        if (A.denom == 1){
+            i = 1 ;
+            s = QString::number(A.num) ;
+        }
+    }
+
+
+
+
     return corres[i]->getLit(s);
 }
 
@@ -348,7 +404,6 @@ Literale& Pile::top() const {
     Item temp = stack->top() ;
     return temp.getLiterale();
 }
-	
 
 
 bool estUnOperateur(const QString s){
@@ -356,6 +411,9 @@ bool estUnOperateur(const QString s){
 	if (s=="-") return true;
 	if (s=="*") return true;
 	if (s=="/") return true;
+    if (s=="DIV") return true;
+    if (s=="MOD") return true;
+    if (s=="$") return true;
 	return false;
 }
 
@@ -366,43 +424,228 @@ bool estUnNombre(const QString s){
    if(s.contains(rr)) return true ;
    QRegExp rf("^(\\d+)/(\\d+)$");
    if(s.contains(rf)) return true ;
-   QRegExp rim("^\\d+(.\\d+)?\\$\\d+(.\\d+)?$");
+   QRegExp rim("^\\d+((\\.|/)\\d+)?\\$\\d+((\\.|/)\\d+)?$");
    if(s.contains(rim)) return true ;
    return false;
 }
 
 
-void Controleur::commande(const QString& c){
-    if (estUnNombre(c)){
-        expAff.push(expMng.addLit(c));
-	}else{
-		
-		if (estUnOperateur(c)){
-			if (expAff.taille()>=2) {
-                Literale& v2=expAff.top();
-				expAff.pop();
-                Literale& v1=expAff.top();
-				expAff.pop();
-                Attributs res;
 
-                if (c=="+") res=v1+v2;
-				if (c=="-") res=v1-v2;
-				if (c=="*") res=v1*v2;
-                if (c=="/") {
-                    if (v2.getValue().num != 0) res=v1/v2;
-                    else {
-                        expAff.setMessage("Erreur : division par zéro");
-                        res=v1.getValue();
-                    }
-                }
-                expMng.removeLiterale(v1);
-                expMng.removeLiterale(v2);
-                Literale& e=expMng.addLit(res);
-				expAff.push(e);
-			}else{
-				expAff.setMessage("Erreur : pas assez d'arguments");
-			}
-		}else expAff.setMessage("Erreur : commande inconnue");
-	}
+
+
+
+void adition::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack->size() >= 2){
+    Literale& v2=P.top();
+    P.pop();
+    Literale& v1=P.top();
+    P.pop();
+    Attributs res;
+
+    res=v1+v2;
+    LiteraleManager::getInstance().removeLiterale(v1);
+    LiteraleManager::getInstance().removeLiterale(v2);
+    Literale& e=LiteraleManager::getInstance().addLit(res);
+    P.push(e);
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void soustraction::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack->size() >= 2){
+    Literale& v2=P.top();
+    P.pop();
+    Literale& v1=P.top();
+    P.pop();
+    Attributs res;
+
+    res=v1-v2;
+    LiteraleManager::getInstance().removeLiterale(v1);
+    LiteraleManager::getInstance().removeLiterale(v2);
+    Literale& e=LiteraleManager::getInstance().addLit(res);
+    P.push(e);
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void multiplication::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack->size() >= 2){
+    Literale& v2=P.top();
+    P.pop();
+    Literale& v1=P.top();
+    P.pop();
+    Attributs res;
+
+    res=v1*v2;
+    LiteraleManager::getInstance().removeLiterale(v1);
+    LiteraleManager::getInstance().removeLiterale(v2);
+    Literale& e=LiteraleManager::getInstance().addLit(res);
+    P.push(e);
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void division::operator()() {
+
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack->size() >= 2){
+    Literale& v2=P.top();
+    P.pop();
+    if ((v2.getValue().num == 0) && (v2.getValue().ImNum==0)){
+        P.setMessage("Erreur : division par zéro");
+        return ; }
+
+    Literale& v1=P.top();
+    P.pop();
+    Attributs res;
+
+    res=v1/v2;
+    LiteraleManager::getInstance().removeLiterale(v1);
+    LiteraleManager::getInstance().removeLiterale(v2);
+    Literale& e=LiteraleManager::getInstance().addLit(res);
+    P.push(e);
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void DIV::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack->size() >= 2){
+
+    Literale& v2=P.top();
+    if (! DIV::check(v2)) return ;
+    P.pop() ;
+    if ((v2.getValue().num == 0) && (v2.getValue().ImNum==0)){
+        P.setMessage("Erreur : division par zéro");
+        return ; }
+
+    Literale& v1=P.top();
+    if (! DIV::check(v1)) {
+        P.push(v2) ;
+        return ;
+    }
+    P.pop() ;
+
+    Attributs res;
+    res= Attributs((int) v1.getValue().num/ (int) v2.getValue().num );
+    LiteraleManager::getInstance().removeLiterale(v1);
+    LiteraleManager::getInstance().removeLiterale(v2);
+    Literale& e=LiteraleManager::getInstance().addLit(res);
+    P.push(e);
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+bool DIV::check(Literale& L) const {
+    if (LiteraleManager::getInstance().choix_type(L.getValue()) == 1) return true ;
+    Controleur::getInstance()->getPile().setMessage("Erreur : Arguments non entiers");
+    return false ;
+}
+
+void MOD::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack->size() >= 2){
+
+    Literale& v2=P.top();
+    if (! MOD::check(v2)) return ;
+    P.pop() ;
+    if ((v2.getValue().num == 0) && (v2.getValue().ImNum==0)){
+        P.setMessage("Erreur : division par zéro");
+        return ; }
+
+    Literale& v1=P.top();
+    if (! MOD::check(v1)){
+        P.push(v2) ;
+        return ;
+    }
+    P.pop() ;
+
+    Attributs res;
+    res= Attributs((int) v1.getValue().num % (int) v2.getValue().num );
+    LiteraleManager::getInstance().removeLiterale(v1);
+    LiteraleManager::getInstance().removeLiterale(v2);
+    Literale& e=LiteraleManager::getInstance().addLit(res);
+    P.push(e);
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+bool MOD::check(Literale& L) const {
+    if (LiteraleManager::getInstance().choix_type(L.getValue()) == 1) return true ;
+    Controleur::getInstance()->getPile().setMessage("Erreur : Arguments non entiers");
+    return false ;
+}
+
+void Ima::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack->size() >= 2){
+
+    Literale& v2=P.top();
+    if (! Ima::check(v2)) return ;
+    P.pop() ;
+
+    Literale& v1=P.top();
+    if (! Ima::check(v1)) {
+        P.push(v2) ;
+        return ;
+    }
+    P.pop() ;
+
+    Attributs res;
+    res= Attributs( v1.getValue().num , v1.getValue().denom  ,  v2.getValue().num , v2.getValue().denom  );
+    LiteraleManager::getInstance().removeLiterale(v1);
+    LiteraleManager::getInstance().removeLiterale(v2);
+    Literale& e=LiteraleManager::getInstance().addLit(res);
+    P.push(e);
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+bool Ima::check(Literale& L) const {
+    if (LiteraleManager::getInstance().choix_type(L.getValue()) != 4) return true ;
+    Controleur::getInstance()->getPile().setMessage("Erreur : Arguments deja complexes");
+    return false ;
+}
+
+void Controleur::initFonct() {
+    fonct["+"] = new adition ;
+    fonct["-"] = new soustraction ;
+    fonct["*"] = new multiplication ;
+    fonct["/"] = new division ;
+    fonct["DIV"] = new DIV ;
+    fonct["MOD"] = new MOD ;
+    fonct["$"] = new Ima ;
+}
+
+Controleur::~Controleur() {}
+
+
+void Controleur::commande(const QString& c){
+    if (estUnNombre(c))
+        expAff.push(expMng.addLit(c));
+    else{
+        if(fonct.find(c) == fonct.end())
+            expAff.setMessage("Erreur : commande inconnue");
+        else
+            (*fonct[c])();
+
+    }
 }
 

@@ -12,7 +12,9 @@
 #include<string>
 #include<iostream>
 #include<map>
-using namespace std;
+#include"operateur.h"
+
+
 
 class ComputerException {
     QString info;
@@ -153,11 +155,6 @@ public:
     Literale& addLit(Attributs a) ;
     virtual Literale& getLit(QString s) { }
     virtual Literale& getLit(Attributs a) { }
-    //Literale& addNum(QString s);
-    //Literale& addNum(Attributs a);
-    //Literale& addEntier(int v);
-    //Literale& addReel(double v);
-    //Literale& addFraction(int n , int d);
     void removeLiterale(Literale& e);
     static LiteraleManager& getInstance();
     static void libererInstance();
@@ -238,17 +235,110 @@ signals:
 };
 
 
+class Controleur ;
+
+class operateur {
+public :
+    operateur() {}
+    virtual ~operateur() {}
+    virtual void operator()() = 0;
+    virtual bool check(Literale& L) const = 0 ;
+};
+
+
+class adition : public operateur {
+public :
+    adition() {}
+    virtual ~adition() {}
+    void operator()() ;
+    bool check(Literale& L) const {return true ; }
+};
+
+class soustraction : public operateur {
+public :
+    soustraction() {}
+    virtual ~soustraction() {}
+    void operator()() ;
+    bool check(Literale& L) const {return true ; }
+};
+
+class multiplication : public operateur {
+public :
+    multiplication() {}
+    virtual ~multiplication() {}
+    void operator()() ;
+    bool check(Literale& L) const {return true ; }
+};
+
+class division : public operateur {
+public :
+    division() {}
+    virtual ~division() {}
+    void operator()() ;
+    bool check(Literale& L) const {return true ; }
+};
+
+class DIV : public operateur {
+public :
+    DIV() {}
+    virtual ~DIV() {}
+    void operator()() ;
+    bool check(Literale& L) const;
+};
+
+class MOD : public operateur {
+public :
+    MOD() {}
+    virtual ~MOD() {}
+    void operator()() ;
+    bool check(Literale& L) const;
+};
+
+class Ima : public operateur {
+public :
+    Ima() {}
+    virtual ~Ima() {}
+    void operator()() ;
+    bool check(Literale& L) const;
+};
+
+
+
+
+
+
 class Controleur {
     LiteraleManager& expMng;
     Pile& expAff;
-public:
+    std::map <QString , operateur*> fonct ;
+
     Controleur(LiteraleManager& m, Pile& v):expMng(m), expAff(v){}
+    Controleur(const Controleur& c) ;
+    ~Controleur() ;
+    Controleur& operator = (const Controleur& c) ;
+
+    void initFonct() ;
+
+    struct HandlerC{
+        Controleur* instance;
+        HandlerC():instance(0){}
+        ~HandlerC(){  delete instance;  }
+    };
+    static HandlerC handlerC;
+
+public:
     void commande(const QString& c);
+    Pile& getPile()  {return expAff ; }
+
+    static Controleur* getInstance(LiteraleManager& m, Pile& v);
+    static Controleur* getInstance();
+    static void libererInstance();
 
 };
 
 bool estUnOperateur(const QString s);
 bool estUnNombre(const QString s);
+
 
 
 #endif

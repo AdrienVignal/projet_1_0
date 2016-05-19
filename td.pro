@@ -10,3 +10,5 @@ HEADERS += \
     computer.h \
     qcomputer.h
 
+FORMS +=
+
