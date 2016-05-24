@@ -67,7 +67,14 @@ void QComputer::getNextCommande()
 {
     //message->setText(commande->text()) ;  //marque dans la ligne de commande l'entrée
     pile->setMessage("");
-    QString c=commande->text() ;
+
+    QString source =commande->text() ;
+    QTextStream s (&source) ;
+    QString c ;
+    s>> c ;
+    while (c != "") {
     controleur->commande(c) ;
     commande->clear() ;
+    s>>c ;
+    }
 }
