@@ -174,4 +174,18 @@ public :
 };
 
 
+class CtrlZ : public operateur {
+public :
+    CtrlZ() {}
+    virtual ~CtrlZ() {}
+    void operator()() ;
+};
+
+class CtrlY : public operateur {
+public :
+    CtrlY() {}
+    virtual ~CtrlY() {}
+    void operator()() ;
+};
+
 #endif // OPERATEURS_H

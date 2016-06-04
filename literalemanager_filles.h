@@ -6,15 +6,16 @@
 
 
 class EntierManager : public LiteraleManager {
+
     Entier& getLit(Attributs a) ; //créé un objet entier
     EntierManager() {}
-    ~EntierManager() {}
+    ~EntierManager();
     friend class LiteraleManager;
 };
 
 class FractionManager : public LiteraleManager {
     FractionManager() {}
-    ~FractionManager() {}
+    ~FractionManager() ;
     Fraction& getLit(Attributs a) ; //créé un objet fraction
     friend class LiteraleManager;
 
@@ -23,21 +24,21 @@ class FractionManager : public LiteraleManager {
 class ReelManager : public LiteraleManager {
     Reel& getLit(Attributs a) ; //créé un objet réel
     ReelManager() {}
-    ~ReelManager() {}
+    ~ReelManager() ;
     friend class LiteraleManager;
 };
 
 class ComplexManager : public LiteraleManager {
     Complex& getLit(Attributs a) ;  //créé un objet complex
     ComplexManager() {}
-    ~ComplexManager() {}
+    ~ComplexManager() ;
     friend class LiteraleManager;
 };
 
 class ProgramManager : public LiteraleManager{
     Program& getLit(Attributs a) ;  //créé un objet program
-    ~ProgramManager() {}
-    QVector<Program*> tab;
+    ProgramManager() {}
+    ~ProgramManager() ;
     friend class LiteraleManager;
 };
 

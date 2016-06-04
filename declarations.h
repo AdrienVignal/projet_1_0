@@ -14,6 +14,7 @@
 #include<map>
 #include <algorithm>
 #include <fstream>
+#include <deque>
 
 //fichier faisant les inclusions de bibliothèques necessaire, ainsi que la décalaration de quelques class indispensables
 
@@ -25,6 +26,7 @@ class LiteraleManager ;
 class Pile ;
 class Complex ;
 class Program ;
+class Item ;
 
 
 

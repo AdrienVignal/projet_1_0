@@ -15,7 +15,8 @@ SOURCES += \
     program.cpp \
     prog_window.cpp \
     secondwindow.cpp \
-    main_window.cpp
+    main_window.cpp \
+    memento.cpp
 
 HEADERS += \
     computer.h \
@@ -32,7 +33,8 @@ HEADERS += \
     program.h \
     secondwindow.h \
     prog_window.h \
-    main_window.h
+    main_window.h \
+    memento.h
 
 FORMS +=
 

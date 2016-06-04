@@ -7,6 +7,7 @@ Controleur* Controleur::getInstance(){
 }
 
 void Controleur::libererInstance(){
+    LiteraleManager::libererInstance() ;
     delete(handlerC.instance) ;
     handlerC.instance=0;
 }
@@ -60,11 +61,28 @@ void Controleur::initFonct() { //création des foncteurs, et entré dans le map
     fonct["AND"] = new ET ;
     fonct["OR"] = new OU ;
     fonct["NOT"] = new NON ;
+    fonct["UNDO"] = new CtrlZ;
+    fonct["REDO"] = new CtrlY;
 
 }
 
 Controleur::~Controleur() {}
 
+void Controleur::sauvegarde() {
+    saves.getID();
+    QVector<Literale*> c = expMng.getCreated();
+
+
+    if (expAff.isModified() )
+        //saves.addState(expAff.stack , expMng.getUsed() , expMng.getCreated()) ;
+        saves.addState(expAff.stack , expMng.getUsed() , c) ;
+    expAff.NoModif();
+   qDebug()<<"taille mem = "<<saves.getSize() ;
+   qDebug()<<"courrant = "<<saves.getCourrant() ;
+
+   saves.getID();
+
+}
 
 void Controleur::commande(const QString& c){
     if (estUnNombre(c))
@@ -74,8 +92,17 @@ void Controleur::commande(const QString& c){
             expAff.setMessage("Erreur : commande inconnue");
         else
             (*fonct[c])(); //appelle de la surcharge de opérateur() du foncteur approprié
-
     }
+
+}
+void Controleur::rest() {
+    expAff.stack = saves.GetState() ;
+    expAff.NoModif();
+}
+
+void Controleur::unRest() {
+    expAff.stack = saves.GetStateDown() ;
+    expAff.NoModif();
 }
 
 

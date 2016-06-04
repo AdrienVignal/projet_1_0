@@ -198,7 +198,7 @@ for(unsigned int i = 0 ; i<pile->getNbItemsToAffiche() ; i++)
 
 unsigned int nb = 0 ;
 
-for(Item* it= (pile->stack->end() -1)   ; it!= (pile->stack->begin()-1) and nb < pile->getNbItemsToAffiche() ; --it , ++nb)
+for(Item* it= (pile->stack.end() -1)   ; it!= (pile->stack.begin()-1) and nb < pile->getNbItemsToAffiche() ; --it , ++nb)
 
     vuePile->item(pile->getNbItemsToAffiche()-nb-1,0)->setText((it->getLiterale()).toString()) ;
 
@@ -241,4 +241,6 @@ void MainWindow::getNextCommande()
         commande->clear() ;
         s>>c ;
     }
+    controleur->sauvegarde();
+    refresh() ;
 }

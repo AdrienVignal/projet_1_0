@@ -16,20 +16,41 @@ LiteraleManager& LiteraleManager::getInstance(){
     return *handler.instance;
 }
 
-LiteraleManager::LiteraleManager() {}
+LiteraleManager::LiteraleManager() { }
 LiteraleManager::~LiteraleManager() {
-    for (int i = 1 ; i< 5 ; ++i) delete corres[i] ;
 }
 
 
 void LiteraleManager::libererInstance(){
+    handler.instance->deleteTab() ;
     delete(handler.instance) ;
     handler.instance=0;
 }
 
 
-void LiteraleManager::removeLiterale(Literale& e){
-    delete(&e) ;
+
+
+void LiteraleManager::deleteLiterale(Literale* L) {
+    int i = 0 ;
+    while (i<tab.size()){
+        if (tab[i]==L)
+            tab.remove(i, 1) ;
+        ++i ;
+    }
+    qDebug()<<"nb Lit = "<<tab.size() ;
+    delete(L) ;
+}
+
+
+void LiteraleManager::deleteLiteraleTab(QVector<Literale*>& V) {
+    while (!V.empty()){
+        deleteLiterale(V[0]) ;
+        V.pop_front();
+    }
+}
+void LiteraleManager::removeLiterale(Literale& L) {
+    used.push_back(&L);
+    qDebug()<<"used = "<<used.size() ;
 }
 
 int LiteraleManager::choix_type(Attributs a) {
@@ -54,7 +75,10 @@ void LiteraleManager::initmap() {
     corres[4] = new ComplexManager;
     corres[5] = new ProgramManager;
 }
-
+void LiteraleManager::deleteTab(){
+for (int i = 1 ; i< 6 ; ++i)
+delete corres[i] ;
+}
 
 Literale& LiteraleManager::addLit(QString s) {
 
@@ -107,16 +131,23 @@ Literale& LiteraleManager::addLit(QString s) {
         Literale& LRe = addLit(Re) ;  //rappel de la fonction pour construire le litéral de la partie réelle
         Literale& LIm = addLit(Im) ;    //rappel de la fonction pour construire le litéral de la partie im
         A = Attributs (LRe.getValue().num , LRe.getValue().denom , LIm.getValue().num , LIm.getValue().denom) ;  //entrée de attribut
-        delete(&LRe) ; //supression des litérale créées
-        delete(&LIm) ;
     }
     int i = choix_type(A) ;  //retourne le type de A
-    return corres[i]->getLit(A) ; //construit la litérale en fct du type et de A
+    Literale& L =  corres[i]->getLit(A) ; //construit la litérale en fct du type et de A
+    tab.push_back(&L);
+    qDebug()<<"nb Lit string = "<<tab.size() ;
+    created.push_back(&L);
+    return L ;
 
 }
 
 
 Literale& LiteraleManager::addLit(Attributs a) {
     int i = choix_type(a ) ; //vérifie le type de a
-    return corres[i]->getLit(a);  //construit la litérale appropriéee
+    Literale& L = corres[i]->getLit(a);  //construit la litérale appropriéee
+    tab.push_back(&L);
+    qDebug()<<"nb Lit Attributs = "<<tab.size() ;
+    created.push_back(&L);
+    return L ;
 }
+

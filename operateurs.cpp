@@ -7,7 +7,7 @@
 
 void adition::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ; // accède à la pile
-    if (P.stack->size() >= 2){  //vérifie s'il y a assez de litérale pour exécuter l'instructructuon
+    if (P.stack.size() >= 2){  //vérifie s'il y a assez de litérale pour exécuter l'instructructuon
     Literale& v2=P.top(); //prend la première litérale
     P.pop();
     Literale& v1=P.top();  //prend la deuxième
@@ -26,7 +26,7 @@ void adition::operator()() {
 
 void soustraction::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 2){
+    if (P.stack.size() >= 2){
     Literale& v2=P.top();
     P.pop();
     Literale& v1=P.top();
@@ -46,13 +46,14 @@ void soustraction::operator()() {
 
 void multiplication::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 2){
+    if (P.stack.size() >= 2){
     Literale& v2=P.top();
     P.pop();
     Literale& v1=P.top();
     P.pop();
     Attributs res;
     res=v1*v2;
+
 
     LiteraleManager::getInstance().removeLiterale(v1);
     LiteraleManager::getInstance().removeLiterale(v2);
@@ -67,7 +68,7 @@ void multiplication::operator()() {
 void division::operator()() {
 
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 2){
+    if (P.stack.size() >= 2){
     Literale& v2=P.top();
     P.pop();
     if ((v2.getValue().num == 0) && (v2.getValue().ImNum==0)){
@@ -91,7 +92,7 @@ void division::operator()() {
 
 void DIV::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 2){
+    if (P.stack.size() >= 2){
 
     Literale& v2=P.top();
     if (! DIV::check(v2)) return ;
@@ -127,7 +128,7 @@ bool DIV::check(Literale& L) const {
 
 void MOD::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 2){
+    if (P.stack.size() >= 2){
 
     Literale& v2=P.top();
     if (! MOD::check(v2)) return ;
@@ -163,7 +164,7 @@ bool MOD::check(Literale& L) const {
 
 void Ima::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 2){
+    if (P.stack.size() >= 2){
 
     Literale& v2=P.top();
     if (! Ima::check(v2)) return ;
@@ -196,7 +197,7 @@ bool Ima::check(Literale& L) const {
 
 void Neg::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 1){
+    if (P.stack.size() >= 1){
 
 
 
@@ -217,7 +218,7 @@ void Neg::operator()() {
 
 void Num::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 1){
+    if (P.stack.size() >= 1){
 
 
 
@@ -246,7 +247,7 @@ bool Num::check(Literale& L) const {
 
 void Den::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 1){
+    if (P.stack.size() >= 1){
 
     Literale& v1=P.top();
     if (! Den::check(v1))
@@ -273,7 +274,7 @@ bool Den::check(Literale& L) const {
 
 void Re::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 1){
+    if (P.stack.size() >= 1){
 
     Literale& v1=P.top();
     P.pop() ;
@@ -291,7 +292,7 @@ void Re::operator()() {
 
 void Im::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >= 1){
+    if (P.stack.size() >= 1){
 
     Literale& v1=P.top();
     P.pop() ;
@@ -309,7 +310,7 @@ void Im::operator()() {
 
 void Eg::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >=2){
+    if (P.stack.size() >=2){
 
     Literale& v1=P.top();
     P.pop() ;
@@ -332,7 +333,7 @@ void Eg::operator()() {
 
 void Diff::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >=2){
+    if (P.stack.size() >=2){
 
     Literale& v1=P.top();
     P.pop() ;
@@ -355,7 +356,7 @@ void Diff::operator()() {
 
 void InfEg::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >=2){
+    if (P.stack.size() >=2){
 
     Literale& v1=P.top();
     if (!InfEg::check(v1) )return ;
@@ -393,7 +394,7 @@ return false ;
 
 void SupEg::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >=2){
+    if (P.stack.size() >=2){
 
     Literale& v1=P.top();
     if (!SupEg::check(v1) )return ;
@@ -431,7 +432,7 @@ return false ;
 
 void Inf::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >=2){
+    if (P.stack.size() >=2){
 
     Literale& v1=P.top();
     if (!Inf::check(v1) )return ;
@@ -467,7 +468,7 @@ return false ;
 
 void Sup::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >=2){
+    if (P.stack.size() >=2){
 
     Literale& v1=P.top();
     if (!Sup::check(v1) )return ;
@@ -503,7 +504,7 @@ return false ;
 
 void ET::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >=2){
+    if (P.stack.size() >=2){
 
     Literale& v1=P.top();
     P.pop() ;
@@ -526,7 +527,7 @@ void ET::operator()() {
 
 void OU::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >=2){
+    if (P.stack.size() >=2){
 
     Literale& v1=P.top();
     P.pop() ;
@@ -549,7 +550,7 @@ void OU::operator()() {
 
 void NON::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack->size() >=1){
+    if (P.stack.size() >=1){
 
     Literale& v1=P.top();
     P.pop() ;
@@ -564,4 +565,20 @@ void NON::operator()() {
     else{
         P.setMessage("Erreur : pas assez d'arguments");
     }
+}
+
+void CtrlZ::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if(Controleur::getInstance()->nbSaved() >0){
+        Controleur::getInstance()->rest() ; }
+        else
+        P.setMessage("Erreur : UNDO impossible");
+}
+
+void CtrlY::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if(Controleur::getInstance()->courrant() >1 ){
+        Controleur::getInstance()->unRest() ; }
+        else
+        P.setMessage("Erreur : REDO impossible");
 }

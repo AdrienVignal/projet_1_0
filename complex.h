@@ -9,7 +9,7 @@ class Complex : public Literale {
     Complex(const Complex& e);
     Complex& operator=(const Complex& e);
     Complex(Attributs a) ;
-    Complex(LNum& r, LNum& i) ;
+    //Complex(LNum& r, LNum& i) ;
     //on peut créer un complex à partir d'un attributs, ou de 2 LNum
     virtual ~Complex() ;
     friend class LiteraleManager;
