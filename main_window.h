@@ -14,12 +14,9 @@
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QDebug>
-#include <QSound>
 #include "computer.h"
 #include "secondwindow.h"
 #include "prog_window.h"
-#include "scientific.h"
-#include "keyboard.h"
 
 class MainWindow : public QMainWindow
 {
@@ -34,8 +31,8 @@ class MainWindow : public QMainWindow
     QHBoxLayout* mainSet;
 
     // ON DECLARE DES WIDGETS COMME PARENTS DES LAYOUTS POUR UTILISER LES METHODES SHOW/HIDE
-    Keyboard* keyboard;
-    scientific_pad* scientificPad;
+    QWidget* keyboard;
+    ///QWidget* scientificPad;
     QWidget* controlScreen;
 
     //ON DECLARE 3 LAYOUTS QUI ENGLOBERONT LES SOUS ENSEMBLES DE L'APPLI
@@ -47,107 +44,73 @@ class MainWindow : public QMainWindow
     QLineEdit* message;
     QTableWidget* vuePile;
     QLineEdit* commande;
-    QHBoxLayout* topLayout;
-    QPushButton* sound_lock;
 
-
-    QHBoxLayout* middleLayout;
-    QHBoxLayout* bottomLayout;
-    QVBoxLayout* boutons_droits;
-    QPushButton* enter;
-    QPushButton* pile_plus;
-    QPushButton* pile_moins;
-    bool sound_enabled = true;
-    QVBoxLayout* leftLayout;
     Pile* pile;
     Controleur* controleur;
+
+    // ARCHITECTURE DU KEYBOARD
+
+    QVBoxLayout* num_pad;
+    QVBoxLayout* op_pad;
+    QHBoxLayout* ligne1;
+    QHBoxLayout* ligne2;
+    QHBoxLayout* ligne3;
+    QHBoxLayout* ligne4;
+    QPushButton* b1;
+    QPushButton* b2;
+    QPushButton* b3;
+    QPushButton* b4;
+    QPushButton* b5;
+    QPushButton* b6;
+    QPushButton* b7;
+    QPushButton* b8;
+    QPushButton* b9;
+    QPushButton* b0;
+    QPushButton* bplus;
+    QPushButton* bmoins;
+    QPushButton* bdiv;
+    QPushButton* bmult;
+
+    //ARCHITECTURE DU SCIENTIFIQUEPAD
+    //
+    //
+    //
 
 
     //TOOLBAR
     /*UNDO/REDO  => done
-
+     *BIP SONORE SI MESSAGE  //QObject::connect(pushbutton, SIGNAL(clicked()), qsound_mon_son, SLOT(play()));
      *AFFICHER X DERNIERS ELEM PILE (BOUTON +/-)
      *SECONDE VUE => GESTION MINI PROG/MODIF PARAM CALCU
     */
 
     private slots:
-    void bip(){
-        if(sound_enabled)
-            QSound::play("/home/deneux/Documents/UTC/Projets/projet_1_0/error.wav");
-    }
-
-    void sound_disable(){
-        if(sound_enabled){
-            sound_enabled = false;
-            sound_lock->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/speaker_disabled.png"));
-        }
-        else{
-            sound_enabled = true;
-            sound_lock->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/speaker.png"));
-        }
-    }
 
     void afficher_clavier(){
         if(keyboard->isHidden()){
             keyboard->show();
-            if(scientificPad->isHidden()){
-                size_moy();
-            }else{
-                size_max();
-            }
-
+            //this->size_max();
         }else{
             keyboard->hide();
-            if(scientificPad->isHidden()){
-                size_min();
-            }else{
-                size_moy();
-            }
+            //this->size_min();
         }
     }
-
-    void afficher_scientique(){
-        if(scientificPad->isHidden()){
-            scientificPad->show();
-            if(keyboard->isHidden()){
-                size_moy();
-            }else{
-                size_max();
-            }
-
-        }else{
-            scientificPad->hide();
-            if(keyboard->isHidden()){
-                size_min();
-            }else{
-                size_moy();
-            }
-        }
-    }
-    void pile_create();
+    /*void afficher_scientique(){
+        if(scientificPad->isHidden()) scientificPad->show();
+        else scientificPad->hide();
+        this->resize()
+    }*/
     void openEditProg();
     void openProgWindow();
     void afficher_APropos();
     void refresh();
-    void getNextCommande();
-    void keyboardButtonPressed()
-    {
-        QPushButton* button = qobject_cast<QPushButton*>( sender() );
-
-        if ( button )
-        {
-            commande->insert( button->text() );
-        }
-    }
-    void size_min(){
-        this->setFixedSize(300,350);
-    }
-    void size_moy(){
-        this->setFixedSize(600,350);
+    void getNextCommande(QString repet = "");
+    /*void size_min(){
+        this->setFixedSize(200,300);
     }
     void size_max(){
-        this->setFixedSize(900,350);
-    }
+        this->setFixedSize(600,300);
+    }*/
 };
 
 

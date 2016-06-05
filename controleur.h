@@ -39,6 +39,7 @@ public:
     void rest() ;
     void unRest() ;
     QString getProg(QString s) ;
+    QString getExp(QString s) ;
 
 
 };

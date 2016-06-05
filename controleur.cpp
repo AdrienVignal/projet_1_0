@@ -116,9 +116,27 @@ QString Controleur::getProg(QString s){
         rslt.push_back(s[i]);                 //on ajoute les char au fur et à mesure
         ++i ;
     }
+    if (i<s.size() && s[i].toLatin1() != 32) rslt = "" ; //on vérifie qu'il y est bien un espaces (acsii = 32) après ]
     if (count > 0) rslt = "" ; //on vérifie que tt les progs ouverts soient fermés
     if (!rslt.endsWith(" ]")) rslt = "" ;   //on vérifie un peu la base, c'est à  dire que il y est des espaces et des crochets
     if (!rslt.startsWith("[ ")) rslt = "" ;
+    return rslt ;
+
+}
+
+QString Controleur::getExp(QString s){
+    int i = 1 ;   //pointeur sur un char
+    QString rslt = "'" ; //on est censé commencer l'exp par '
+    while (i<s.size() && s[i].toLatin1() != '\'' ){  //tant que on a des char, et qu'on a pas de quote
+        rslt.push_back(s[i]);                 //on ajoute les char au fur et à mesure
+        ++i ;
+    }
+    if (i<s.size()) rslt.push_back("'");
+
+    ++i ;
+    if (i<s.size() && s[i].toLatin1() != 32) rslt = "" ; //on vérifie qu'il y est bien un espaces (acsii = 32) après '
+    if (!rslt.endsWith(" '")) rslt = "" ;   //on vérifie un peu la base, c'est à  dire que il y est des espaces et des quotes
+    if (!rslt.startsWith("' ")) rslt = "" ;
     return rslt ;
 
 }

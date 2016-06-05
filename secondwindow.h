@@ -21,11 +21,9 @@ class SecondWindow : public QWidget
     QPushButton *valider;
     QPushButton *effacer;
     QHBoxLayout *bottom;
-
     private slots:
     void closeEditProg();
-    void action_effacer();
-    void action_valider();
+
 
 };
 #endif // SECONDWINDOW_H
