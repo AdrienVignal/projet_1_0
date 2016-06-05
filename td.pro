@@ -16,7 +16,8 @@ SOURCES += \
     prog_window.cpp \
     secondwindow.cpp \
     main_window.cpp \
-    memento.cpp
+    memento.cpp \
+    expression.cpp
 
 HEADERS += \
     computer.h \
@@ -34,7 +35,8 @@ HEADERS += \
     secondwindow.h \
     prog_window.h \
     main_window.h \
-    memento.h
+    memento.h \
+    expression.h
 
 FORMS +=
 

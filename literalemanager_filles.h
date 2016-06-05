@@ -42,4 +42,11 @@ class ProgramManager : public LiteraleManager{
     friend class LiteraleManager;
 };
 
+class ExpressionManager : public LiteraleManager{
+    Expression& getLit(Attributs a) ;  //créé un objet expression
+    ExpressionManager() {}
+    ~ExpressionManager() ;
+    friend class LiteraleManager;
+};
+
 #endif // LITERALEMANAGER_FILLES_H

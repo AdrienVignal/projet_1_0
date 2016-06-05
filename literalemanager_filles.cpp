@@ -17,6 +17,8 @@ ComplexManager::~ComplexManager(){}
 
 ProgramManager::~ProgramManager(){}
 
+ExpressionManager::~ExpressionManager(){}
+
 
 Fraction& FractionManager::getLit(Attributs a) {
     return *(new Fraction(a)) ;
@@ -39,6 +41,10 @@ Complex& ComplexManager::getLit(Attributs a) {
 
 Program& ProgramManager::getLit(Attributs a){
     return *(new Program(a)) ;
+}
+
+Expression& ExpressionManager::getLit(Attributs a){
+    return *(new Expression(a)) ;
 }
 
 

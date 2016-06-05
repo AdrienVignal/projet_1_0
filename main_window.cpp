@@ -217,30 +217,77 @@ void MainWindow::openProgWindow(){
 
 
 
-void MainWindow::getNextCommande()
+void MainWindow::getNextCommande(QString repet)
 {
-    //message->setText(commande->text()) ;  //marque dans la ligne de commande l'entrée
     pile->setMessage("");
+    QString source ;
 
-    QString source =commande->text() ;
-    QTextStream s (&source) ;
+    if (repet.isEmpty())
+        source =commande->text() ;
+    else
+        source = repet ;
+
+    QRegExp rExp ("'\\s+([^']+\\s+)?'($|\\s)") ;
+                                        //exp reg d'expression
+                                        //théoriqment, ça marche, car il ne peut pas y avoir d'exp dans une exp
+                                        //du coup on a : ' + 1..= espaces + tout sauf ' + 1..* espaces + ' , et on vérifie qu'il n'y ai rien juste derière quote
+                                        //du coup, on est censé récupérer l'exp reg entièrement , et que la première s'il y en a 2 ou plus cote à cote
     QString c ;
-    s>> c ;
-    QRegExp rp("[.*]\\s+\\w+\\s+STO");
-    /*if(c.contains(rp)){
 
-    }*/
+    QTextStream s (&source) ;
+    s>> c ;
+
     while (c != "") {
-        if(c[0].toLatin1()=='['){
-            c.remove(0,1);
+        if(c.startsWith('\'')) {//regarde s'il y a une quote
+            source = s.readAll() ; //on prend tout ce qu'il y a dans la textStream
+            source.push_front(c); //on remet c
+
+            if (source.contains(rExp)){ //si expression
+                c = rExp.cap(0) ;       //on récupère l'exp
+                qDebug()<<c ;
+                controleur->commande(c) ; //on la traite
+                commande->clear() ;
+                controleur->sauvegarde();
+                refresh() ;
+                source.remove(c)  ; //on l'enlève de source
+                getNextCommande(source) ; //on rappelle la fct avec l'exp en moins
+                return ;
+            }
+            //sinon, alors l'expression est mal écrite, et on annule toute la suite.
+            message->setText("exp fausse");
+            commande->clear() ;
+            return ;
         }
-        else if(c[c.length()-1].toLatin1()==']'){
-            c.remove(c.length()-1,1);
+
+        if(c.startsWith('[')) {//regarde s'il y a [
+            source = s.readAll() ; //on prend tout ce qu'il y a dans la textStream
+            source.push_front(c); //on remet c
+
+            c = controleur->getProg(source) ;
+            if (!c.isEmpty()){ //si c contient qqch
+                controleur->commande(c) ; //on la traite
+                commande->clear() ;
+                controleur->sauvegarde();
+                refresh() ;
+                source.remove(c)  ; //on l'enlève de source
+                getNextCommande(source) ; //on rappelle la fct avec l'exp en moins
+                return ;
+            }
+
+            //sinon, c'est faux, on annule la suite
+            message->setText("prog faux");
+            commande->clear() ;
+            return ;
         }
+
         controleur->commande(c) ;
         commande->clear() ;
         s>>c ;
+
+
     }
     controleur->sauvegarde();
     refresh() ;
 }
+
+

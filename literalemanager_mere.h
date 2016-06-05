@@ -5,6 +5,7 @@
 #include "lnum.h"
 #include "complex"
 #include "program.h"
+#include "expression.h"
 
 class LiteraleManager { //SINGLETON et FACTORY
 protected:

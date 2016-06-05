@@ -12,6 +12,7 @@
 #include "operateurs.h"
 #include "controleur.h"
 #include "attributs.h"
+#include "expression.h"
 
 
 //fichier permettant d'inclure tous les autres

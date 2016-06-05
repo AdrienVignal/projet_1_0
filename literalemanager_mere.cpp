@@ -50,12 +50,14 @@ void LiteraleManager::deleteLiteraleTab(QVector<Literale*>& V) {
 }
 void LiteraleManager::removeLiterale(Literale& L) {
     used.push_back(&L);
-    qDebug()<<"used = "<<used.size() ;
+    //qDebug()<<"used = "<<used.size() ;
 }
 
 int LiteraleManager::choix_type(Attributs a) {
     if (a.s.startsWith("["))
         return 5;
+    if (a.s.startsWith("'"))
+        return 6;
     if (a.ImNum != 0) // si imaginaire , retourne  4
         return 4 ;
     if (a.denom == 1 && floor(a.num)==a.num && a.num<=2147483647 && -1*a.num <= 2147483647 )
@@ -74,9 +76,10 @@ void LiteraleManager::initmap() {
     corres[3] = new FractionManager;
     corres[4] = new ComplexManager;
     corres[5] = new ProgramManager;
+    corres[6] = new ExpressionManager;
 }
 void LiteraleManager::deleteTab(){
-for (int i = 1 ; i< 6 ; ++i)
+for (int i = 1 ; i< 7 ; ++i)
 delete corres[i] ;
 }
 
@@ -88,6 +91,10 @@ Literale& LiteraleManager::addLit(QString s) {
     Attributs A ;
 
     if(s.startsWith("[")){
+        A = Attributs(0,1,0,1,s);
+    }
+
+    if(s.startsWith("'")){
         A = Attributs(0,1,0,1,s);
     }
 

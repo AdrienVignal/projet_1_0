@@ -104,7 +104,7 @@ class MainWindow : public QMainWindow
     void openProgWindow();
     void afficher_APropos();
     void refresh();
-    void getNextCommande();
+    void getNextCommande(QString repet = "");
     /*void size_min(){
         this->setFixedSize(200,300);
     }

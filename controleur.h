@@ -38,12 +38,13 @@ public:
     int courrant() {return saves.getCourrant() ; }
     void rest() ;
     void unRest() ;
+    QString getProg(QString s) ;
 
 
 };
 
 
-bool estUnNombre(const QString s);
+bool estUneLiterale(const QString s);
 
 
 

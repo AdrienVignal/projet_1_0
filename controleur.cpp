@@ -23,9 +23,10 @@ Controleur* Controleur::getInstance(LiteraleManager& m, Pile& v){
 }
 
 
-bool estUnNombre(const QString s){
-    //utilisation des exp régulières pour tester si les chaines sont des nombres
-
+bool estUneLiterale(const QString s){
+    //utilisation des exp régulières pour tester si les chaines sont des litérales
+   if(s.startsWith("["))return true ;
+   if(s.startsWith("'"))return true ;
    QRegExp ri("^(\\d+)$"); // début + 1..* digit + fin
    if(s.contains(ri)) return true ;
    QRegExp rr("^(\\d+)\\.(\\d+)$");     // début + 1..* digit + . + 1..* digit + fin
@@ -77,15 +78,15 @@ void Controleur::sauvegarde() {
         //saves.addState(expAff.stack , expMng.getUsed() , expMng.getCreated()) ;
         saves.addState(expAff.stack , expMng.getUsed() , c) ;
     expAff.NoModif();
-   qDebug()<<"taille mem = "<<saves.getSize() ;
-   qDebug()<<"courrant = "<<saves.getCourrant() ;
+   //qDebug()<<"taille mem = "<<saves.getSize() ;
+   //qDebug()<<"courrant = "<<saves.getCourrant() ;
 
    saves.getID();
 
 }
 
 void Controleur::commande(const QString& c){
-    if (estUnNombre(c))
+    if (estUneLiterale(c))
         expAff.push(expMng.addLit(c));  //on met dans la pile
     else{
         if(fonct.find(c) == fonct.end())  //vérifie que c est bien unr clé de map
@@ -103,6 +104,23 @@ void Controleur::rest() {
 void Controleur::unRest() {
     expAff.stack = saves.GetStateDown() ;
     expAff.NoModif();
+}
+
+QString Controleur::getProg(QString s){
+    int i = 1 ;   //pointeur sur un char
+    int count = 1 ;  //compte le nb de [ et ]
+    QString rslt = "[" ; //on est censé commencer le prog par [
+    while (i<s.size() && count != 0){  //tant que on a des char, ou tant que la [ n'est pas fermée
+        if (s[i].toLatin1() == '[') ++count ;  //si on ouvre un prog dans le prog, on augmente count
+        if (s[i].toLatin1() == ']') --count ;   //si un prog se ferme, on dec count
+        rslt.push_back(s[i]);                 //on ajoute les char au fur et à mesure
+        ++i ;
+    }
+    if (count > 0) rslt = "" ; //on vérifie que tt les progs ouverts soient fermés
+    if (!rslt.endsWith(" ]")) rslt = "" ;   //on vérifie un peu la base, c'est à  dire que il y est des espaces et des crochets
+    if (!rslt.startsWith("[ ")) rslt = "" ;
+    return rslt ;
+
 }
 
 
