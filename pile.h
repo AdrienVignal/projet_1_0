@@ -19,7 +19,7 @@ class Pile : public QObject {
     bool modif ;
 public:
     QStack<Item> stack;  //contener QStack. Il est en public afin d'éviter de faire getQStack() si on veut manipuer la pile
-    Pile():nbAffiche(4) , modif(false){stack = *(new QStack<Item> ); }
+    Pile():nbAffiche(6) , modif(false){stack = *(new QStack<Item> ); }
     ~Pile() ;
     void push(Literale& e);
     void pop();
@@ -37,6 +37,16 @@ public:
 
 signals:
     void modificationEtat();
-};
 
+private slots :
+
+
+    void aug_pile() {
+        this->setNbItemsToAffiche(nbAffiche+1);
+    }
+
+    void dim_pile() {
+        if(getNbItemsToAffiche()>1) this->setNbItemsToAffiche(nbAffiche-1);
+    }
+};
 #endif // PILE_H

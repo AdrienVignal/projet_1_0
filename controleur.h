@@ -43,6 +43,7 @@ public:
     bool estUnOperateur(const QString s){return fonct.find(s) != fonct.end() ; }
 
 
+
 };
 
 

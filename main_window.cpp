@@ -1,10 +1,12 @@
 #include "main_window.h"
 #include "declarations.h"
+#include <Qt>
 
 MainWindow::MainWindow()
 {
     //CREATION DU MENU
     setWindowTitle("CalcUTC");
+    this->size_min();
     QMenu *menuOption = menuBar()->addMenu("&Option");
     QAction *actionQuitter = new QAction("&Quitter", this); //AJOUT DE QUITTER
     menuOption->addAction(actionQuitter);
@@ -22,12 +24,12 @@ MainWindow::MainWindow()
 
     QAction *actionRedo = new QAction("&Redo", this);  // AJOUT DU "Redo"
     menuOption->addAction(actionRedo);
-    actionRedo->setIcon(QIcon("/home/deneux/Bureau/UTC/Lo21/Projet/calcutc_v2/calcUTC_v2/arrow_redo.png"));
+    actionRedo->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/arrow_redo.png"));
     actionRedo->setShortcut(QKeySequence(tr("Ctrl+y")));
 
     QAction *actionUndo = new QAction("&Undo", this);  // AJOUT DU "Undo"
     menuOption->addAction(actionUndo);
-    actionUndo->setIcon(QIcon("/home/deneux/Bureau/UTC/Lo21/Projet/calcutc_v2/calcUTC_v2/arrow_undo.png"));
+    actionUndo->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/arrow_undo.png"));
     actionUndo->setShortcut(QKeySequence(tr("Ctrl+z")));
 
     QMenu *menuAide = menuBar()->addMenu("&Aide");
@@ -37,147 +39,154 @@ MainWindow::MainWindow()
     // GESTION DES SIGNAUX ET SLOTS DU MENU
     connect(actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
     actionQuitter->setShortcut(QKeySequence("Escape"));
-    //  connect(actionProg, SIGNAL(triggered()), this, SLOT()
+    connect(actionScientifique, SIGNAL(triggered()), this, SLOT(afficher_scientique()));
     connect(actionClavier, SIGNAL(triggered()), this, SLOT(afficher_clavier()));
     actionClavier->setCheckable(true);
     actionScientifique->setCheckable(true);
+    // CONNECT DU PROGEDIT
+
     connect(actionProg,SIGNAL(triggered(bool)), this, SLOT(openProgWindow()));
-    connect(actionProgEdit,SIGNAL(triggered()), this, SLOT(openEditProg())); // OOUVRE LE QEDITTEXT
+    connect(actionProgEdit,SIGNAL(triggered()), this, SLOT(openEditProg())); // OUVRE LE QEDITTEXT
     connect(actionAPropos,SIGNAL(triggered(bool)), this, SLOT(afficher_APropos()));
 
 
     //INITIALISATION DES OBJETS DU .h
-    QWidget *mainArea = new QWidget;
-    mainArea->setStyleSheet("background:#F0FFFF");
+    mainArea = new QWidget;
     mainSet = new QHBoxLayout;
+    scientificPad = new scientific_pad;
+    scientificPad->hide();
 
-    keyboard = new QWidget();
+
+    keyboard = new Keyboard();
     keyboard->hide();
     controlScreen = new QWidget();
-    controlScreen->setFixedSize(QSize(200, 300));
+    controlScreen->setFixedSize(QSize(280, 300));
 
     pile = new Pile ;
     controleur = Controleur::getInstance(LiteraleManager::getInstance() , *pile) ;
     message = new QLineEdit() ;
     commande = new QLineEdit() ;
     vuePile = new QTableWidget (pile->getNbItemsToAffiche(),1) ;
+    topLayout = new QHBoxLayout();
 
+    middleLayout = new QHBoxLayout();
+    boutons_droits = new QVBoxLayout();
 
+    bottomLayout = new QHBoxLayout();
+    pile_plus = new QPushButton();
+    pile_moins = new QPushButton();
+    enter = new QPushButton();
+
+    leftLayout = new QVBoxLayout();
+    leftLayout->addWidget(vuePile);
+    vuePile->setStyleSheet("background : rgba(35,141,214,45)");
+
+    commande->setStyleSheet("background : rgba(35,141,214,45)");
+    //MIDDLELAYOUT SETTINGS
+
+    middleLayout->addLayout(leftLayout);
+    middleLayout->addLayout(boutons_droits);
+
+    boutons_droits->addWidget(pile_plus);
+    boutons_droits->addWidget(pile_moins);
+
+    //BOTTOM LAYOUT SETTINGS
+
+    bottomLayout->addWidget(commande);
+    bottomLayout->addWidget(enter);
+    enter->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/enter-arrow.png"));
+    enter->setFlat(true);
+    enter->setFocusPolicy(Qt::NoFocus);
+
+    connect(enter,SIGNAL(clicked(bool)),this,SLOT(getNextCommande()));
+
+    //BOUTON PILE SETTINGS + CONNECT
+    pile_plus->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/add.png"));
+    pile_plus->setFlat(true);
+    pile_plus->setFocusPolicy(Qt::NoFocus);
+    pile_moins->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/minus.png"));
+    pile_moins->setFlat(true);
+    pile_moins->setFocusPolicy(Qt::NoFocus);
+
+    connect(pile_plus,SIGNAL(clicked(bool)),pile,SLOT(aug_pile()));
+    connect(pile_plus,SIGNAL(clicked(bool)),this,SLOT(pile_create()));
+    connect(pile_moins,SIGNAL(clicked(bool)),pile,SLOT(dim_pile()));
+    connect(pile_moins,SIGNAL(clicked(bool)),this,SLOT(pile_create()));
+
+    // MESSAGE SETTINGS
 
     message->setReadOnly(true);    //empèche d'écrire dans la lineEdit
     message->setStyleSheet("background: blue; color: yellow");
+    message->setAlignment(Qt::AlignHCenter);
+    message->setFixedHeight(45);
+
+    //VUE PLIE SETTINGS
 
     vuePile->horizontalHeader()->setVisible(false);   //enlève l'indice de col
     vuePile->horizontalHeader()->setStretchLastSection(true);   //ajuste la largeur à la fenetre
+    vuePile->setSelectionMode(QAbstractItemView::NoSelection);
     vuePile->setEditTriggers(QAbstractItemView::NoEditTriggers) ;  //empèche d'écrire dans les cellules
 
-    QStringList liste;
-    for(unsigned int i=pile->getNbItemsToAffiche() ; i>0 ; i--)
-    {
-        QString str = QString::number(i) ;
-        str+=" :";
-        liste<<str ;
-    }
+    //SOUND_LOCK SETTINGS
+    sound_lock = new QPushButton();
+    sound_lock->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/speaker.png"));
+    sound_lock->setFlat(true);
+    sound_lock->setFocusPolicy(Qt::NoFocus);
+    connect(sound_lock,SIGNAL(clicked(bool)),this,SLOT(sound_disable()));
 
-    vuePile->setVerticalHeaderLabels(liste) ;
-    for(unsigned int i=0 ; i<pile->getNbItemsToAffiche() ; i++)
-    {
-        vuePile->setItem(i , 0 , new QTableWidgetItem("")) ;
-    }
+    //TOPLAYOUT SETTINGS
+
+
+    // LA PILE
+
+    pile_create();
     
 
     //GESTION DES CONNECTS DU CONTROLSCREEN
-    connect (commande, SIGNAL (returnPressed()) , this , SLOT(getNextCommande())) ;
+    connect(commande, SIGNAL (returnPressed()) , this , SLOT(getNextCommande())) ;
     connect(pile , SIGNAL (modificationEtat()) , this, SLOT(refresh())) ;
 
+    //GESTION DES CONNECTS DU KEYBOARD
 
-    //BOUTONS DU KEYBOARD
-    b1 = new QPushButton("1");
-    b1->setFixedSize(45,45);
-    b2 = new QPushButton("2");
-    b2->setFixedSize(45,45);
-    b3 = new QPushButton("3");
-    b3->setFixedSize(45,45);
-    b4 = new QPushButton("4");
-    b4->setFixedSize(45,45);
-    b5 = new QPushButton("5");
-    b5->setFixedSize(45,45);
-    b6 = new QPushButton("6");
-    b6->setFixedSize(45,45);
-    b7 = new QPushButton("7");
-    b7->setFixedSize(45,45);
-    b8 = new QPushButton("8");
-    b8->setFixedSize(45,45);
-    b9 = new QPushButton("9");
-    b9->setFixedSize(45,45);
-    b0 = new QPushButton("0");
-    b0->setFixedSize(100,45);
-
-    bplus = new QPushButton("+");
-    bplus->setFixedSize(90,45);
-    bmoins = new QPushButton("-");
-    bmoins->setFixedSize(90,45);
-    bdiv = new QPushButton("/");
-    bdiv->setFixedSize(90,45);
-    bmult = new QPushButton("x");
-    bmult->setFixedSize(90,45);
-
-    ligne1 = new QHBoxLayout();
-    ligne1->setContentsMargins(3,3,3,3);
-    ligne2 = new QHBoxLayout();
-    ligne2->setContentsMargins(3,3,3,3);
-    ligne3 = new QHBoxLayout();
-    ligne3->setContentsMargins(3,3,3,3);
-    ligne4 = new QHBoxLayout();
-    ligne4->setContentsMargins(3,3,3,3);
-    num_pad = new QVBoxLayout();
-    op_pad = new QVBoxLayout();
-    //LAYOUT DU KEYBOARD
-
-    ligne1->addWidget(b1);
-    ligne1->addWidget(b2);
-    ligne1->addWidget(b3);
-
-    ligne2->addWidget(b4);
-    ligne2->addWidget(b5);
-    ligne2->addWidget(b6);
-
-    ligne3->addWidget(b7);
-    ligne3->addWidget(b8);
-    ligne3->addWidget(b9);
-
-    ligne4->addWidget(b0);
-
-    op_pad ->addWidget(bplus);
-    op_pad ->addWidget(bmoins);
-    op_pad ->addWidget(bdiv);
-    op_pad ->addWidget(bmult);
-
-    num_pad->addLayout(ligne1);
-    num_pad->addLayout(ligne2);
-    num_pad->addLayout(ligne3);
-    num_pad->addLayout(ligne4);
-
+    connect(keyboard->b1,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->b2,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->b3,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->b4,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->b5,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->b6,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->b7,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->b8,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->b9,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->b0,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bplus,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bmoins,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bdiv,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bmult,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->clear,SIGNAL(clicked(bool)),commande, SLOT(clear()));
+    connect(keyboard->space,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
 
 
     //CREATION DES LIENS ENTRE LES LAYOUTS
 
 
-
+    mainSet->addWidget(scientificPad);
+    scientificPad->setStyleSheet("background : rgba(35,141,214,45)");
     mainSet->addWidget(controlScreen);
+    message->setStyleSheet("background : rgba(35,186,117,45)");
+    vuePile->setStyleSheet("background : rgba(35,141,214,25)");;
     mainSet->addWidget(keyboard);
+    keyboard->setStyleSheet("background : rgba(35,141,214,45)");
 
+
+    topLayout->addWidget(message);
+    topLayout->addWidget(sound_lock);
 
     LcontrolScreen = new QVBoxLayout;
     controlScreen->setLayout(LcontrolScreen);
-    LcontrolScreen->addWidget(message);
-    LcontrolScreen->addWidget(vuePile);
-    LcontrolScreen->addWidget(commande);
+    LcontrolScreen->addLayout(topLayout);
+    LcontrolScreen->addLayout(middleLayout);
+    LcontrolScreen->addLayout(bottomLayout);
 
-    Lkeyboard = new QHBoxLayout;
-    keyboard->setLayout(Lkeyboard);
-    Lkeyboard->addLayout(num_pad);
-    Lkeyboard->addLayout(op_pad);
 
     mainArea->setLayout(mainSet);
     setCentralWidget(mainArea);
@@ -190,8 +199,10 @@ void MainWindow::afficher_APropos()
 
 void MainWindow::refresh()
 { //affiche état pile et message éventuel
-message->setText(pile->getMessage())
-       ;
+message->setText(pile->getMessage());
+if(message->text()!=""){
+    this->bip();
+}
 //on efface tt ce qui est affiché
 for(unsigned int i = 0 ; i<pile->getNbItemsToAffiche() ; i++)
     vuePile->item(i,0)->setText("") ;
@@ -216,9 +227,8 @@ void MainWindow::openProgWindow(){
 
 
 
-
 void MainWindow::getNextCommande(QString repet)
-{
+  {
     pile->setMessage("");
     QString source ;
 
@@ -283,4 +293,19 @@ void MainWindow::getNextCommande(QString repet)
     refresh() ;
 }
 
+void MainWindow::pile_create(){
+    QStringList liste;
+    for(unsigned int i=pile->getNbItemsToAffiche() ; i>0 ; i--)
+    {
+        QString str = QString::number(i) ;
+        str+=" :";
+        liste<<str ;
+    }
 
+    vuePile->setVerticalHeaderLabels(liste) ;
+    for(unsigned int i=0 ; i<pile->getNbItemsToAffiche() ; i++)
+    {
+        vuePile->setItem(i , 0 , new QTableWidgetItem("")) ;
+    }
+    refresh();
+}
