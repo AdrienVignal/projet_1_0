@@ -16,6 +16,7 @@
 #include <fstream>
 #include <deque>
 #include <QSet>
+#include <QMap>
 
 //fichier faisant les inclusions de bibliothèques necessaire, ainsi que la décalaration de quelques class indispensables
 

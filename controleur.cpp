@@ -64,6 +64,7 @@ void Controleur::initFonct() { //création des foncteurs, et entré dans le map
     fonct["NOT"] = new NON ;
     fonct["UNDO"] = new CtrlZ;
     fonct["REDO"] = new CtrlY;
+    fonct["EVAL"] = new eval;
 
 }
 

@@ -582,3 +582,25 @@ void CtrlY::operator()() {
         else
         P.setMessage("Erreur : REDO impossible");
 }
+
+void eval::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+
+    Literale& v1=P.top();
+    P.pop() ;
+
+    Attributs res = v1.getValue() ;
+    int i = LiteraleManager::getInstance().choix_type(res) ;
+    if (i!=5 && i!=6){
+         P.setMessage("Erreur : argument non évaluable");
+         return ;
+    }
+    if (i == 5) ((Program&) v1).eval() ;
+    if (i == 6) ((Expression&) v1).eval() ;
+    return ;
+    }
+        P.setMessage("Erreur : pas assez d'arguments");
+
+}
+

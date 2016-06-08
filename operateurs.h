@@ -212,4 +212,11 @@ public :
     int arite() {return 0 ;}
 };
 
+class eval : public operateur {
+public :
+    eval() {}
+    virtual ~eval() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
 #endif // OPERATEURS_H

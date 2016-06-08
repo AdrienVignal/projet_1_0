@@ -21,18 +21,28 @@ QString Expression::toString() const {
 
 
 void Expression::eval() const{
+    QString source = convertToPolish(exp) ;
+    QTextStream s (&source) ;
+    QString c ;
+    s>> c ;
+
+    while (c != "") {
+        Controleur::getInstance()->commande(c) ;
+        s>>c ;
+    }
 }
 
 QString convertToPolish(QString s) {
     s.remove(" ") ;  //on enlève les espaces et les '
     s.remove("'") ;
-    QSet<QChar> charSpe ;  //création des 5 opérateurs spéciaux
-    charSpe.insert('+') ;
-    charSpe.insert('-') ;
-    charSpe.insert('*') ;
-    charSpe.insert('/') ;
-    charSpe.insert('$') ;
-    charSpe.insert(',') ; //pas un opérateur spécial, mais ce comporte pareil
+
+    QMap<QChar , int> charSpe ;
+    charSpe['+'] = 1 ;
+    charSpe['-'] = 1 ;
+    charSpe['/'] = 2 ;
+    charSpe['*'] = 2 ;
+    charSpe['$'] = 3 ;
+    charSpe[','] = 0 ;
     int i = 0 ;                  //pointeur pour se déplacer dans la chaine
     QString result = "" ;
     QString op = "" ;  //variable tempon pour retenir un opérateur ;
@@ -86,14 +96,21 @@ QString convertToPolish(QString s) {
                         result.push_back(" "); //on met un espace
                     }
                    if (i> 0) {  //si jamais il est pas en tête de chaine
-                       i-- ;    //on dec i
+                       if (charSpe[s[i]]>charSpe[s[i-1]]){ //on teste les priorités , si supérieur :
+                           i++ ; //on save
+                       }
+                       else{ //si inf ou égal
+                       --i ;  //on traite l'op en tête
                        result.push_back(s[i]);  //on le push
                        result.push_back(" "); //on met un espace
                        s.remove(i,1) ;   //on le détruit
+                       }
                    }
+                   else{
                    if (s[i]==',') s.remove(i,1) ;  //enlève , qui sert juste de séparateur
                    else i++ ;   //on "sauvegarde" l'op spé
                     }
+                }
 
                 else{
                     if (s[i].isLetter() ){ //si on a une lettre, alors 3 cas : opérateur (opérande) ,  variable (atome) , ou racourcis d'opérateur (atome)
@@ -122,15 +139,18 @@ QString convertToPolish(QString s) {
         result.push_back(" "); //on met un espace
     }
 
-    if (i> 0) {  //si jamais il est pas en tête de chaine
+    while (i> 0) {  //si jamais il est pas en tête de chaine
         i-- ;    //on dec i
         result.push_back(s[i]);  //on le push
         result.push_back(" "); //on met un espace
         s.remove(i,1) ;   //on le détruit
+
     }
     qDebug()<<"Le resultat est : "<<result ;
     return result ;
 }
+
+
 
 
 

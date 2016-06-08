@@ -14,7 +14,6 @@ private:
     ~Program();
 public:
     void eval() const;
-
     Attributs getValue() const{return Attributs(0,1,0,1,prog) ;}
     QString toString() const ;
 
