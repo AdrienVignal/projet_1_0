@@ -37,20 +37,13 @@ QString Program::toString() const {
 
 void Program::eval() const{
     QString source = prog;
+    source.remove(0,1) ; //on enlève[
+    source.remove(source.size()-1 , 1) ;// on enlève ]
     QTextStream s (&source) ;
     QString c ;
     s>> c ;
-    QRegExp rp("[.*]\\s+\\w+\\s+STO");
-    /*if(c.contains(rp)){
 
-    }*/
     while (c != "") {
-        if(c[0].toLatin1()=='['){
-            c.remove(0,1);
-        }
-        else if(c[c.length()-1].toLatin1()==']'){
-            c.remove(c.length()-1,1);
-        }
         Controleur::getInstance()->commande(c) ;
         s>>c ;
     }
