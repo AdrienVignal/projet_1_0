@@ -15,6 +15,7 @@
 #include <algorithm>
 #include <fstream>
 #include <deque>
+#include <QSet>
 
 //fichier faisant les inclusions de bibliothèques necessaire, ainsi que la décalaration de quelques class indispensables
 

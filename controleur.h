@@ -40,12 +40,16 @@ public:
     void unRest() ;
     QString getProg(QString s) ;
     QString getExp(QString s) ;
+    bool estUnOperateur(const QString s){return fonct.find(s) != fonct.end() ; }
 
 
 };
 
 
 bool estUneLiterale(const QString s);
+QString getProg(QString s) ;
+QString getExp(QString s) ;
+QString getPara(QString s) ;
 
 
 

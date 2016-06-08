@@ -236,7 +236,7 @@ void MainWindow::getNextCommande(QString repet)
             source = s.readAll() ; //on prend tout ce qu'il y a dans la textStream
             source.push_front(c); //on remet c
 
-            c = controleur->getExp(source) ;
+            c = getExp(source) ;
             if (!c.isEmpty()){ //si c contient qqch
                 controleur->commande(c) ; //on la traite
                 commande->clear() ;
@@ -256,7 +256,7 @@ void MainWindow::getNextCommande(QString repet)
             source = s.readAll() ; //on prend tout ce qu'il y a dans la textStream
             source.push_front(c); //on remet c
 
-            c = controleur->getProg(source) ;
+            c = getProg(source) ;
             if (!c.isEmpty()){ //si c contient qqch
                 controleur->commande(c) ; //on la traite
                 commande->clear() ;

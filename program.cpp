@@ -20,6 +20,20 @@ Program& Program::operator=(const Program& e){
 
 }
 
+QString Program::toString() const {
+    QString source = prog;
+    QTextStream s (&source) ;
+    QString c ;
+    QString result  = "" ;
+    s>> c ;
+    while (c != "") {
+        result.push_back(c);
+        result.push_back(' ');
+         s>> c ;
+    }
+    return result ;
+}
+
 
 void Program::eval() const{
     QString source = prog;

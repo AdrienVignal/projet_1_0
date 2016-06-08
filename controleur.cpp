@@ -106,7 +106,7 @@ void Controleur::unRest() {
     expAff.NoModif();
 }
 
-QString Controleur::getProg(QString s){
+QString getProg(QString s){
     int i = 1 ;   //pointeur sur un char
     int count = 1 ;  //compte le nb de [ et ]
     QString rslt = "[" ; //on est censé commencer le prog par [
@@ -118,13 +118,13 @@ QString Controleur::getProg(QString s){
     }
     if (i<s.size() && s[i].toLatin1() != 32) rslt = "" ; //on vérifie qu'il y est bien un espaces (acsii = 32) après ]
     if (count > 0) rslt = "" ; //on vérifie que tt les progs ouverts soient fermés
-    if (!rslt.endsWith(" ]")) rslt = "" ;   //on vérifie un peu la base, c'est à  dire que il y est des espaces et des crochets
-    if (!rslt.startsWith("[ ")) rslt = "" ;
+    if (!rslt.endsWith("]")) rslt = "" ;   //on vérifie un peu la base, c'est à  dire que il y ait crochets
+    if (!rslt.startsWith("[")) rslt = "" ;
     return rslt ;
 
 }
 
-QString Controleur::getExp(QString s){
+QString getExp(QString s){
     int i = 1 ;   //pointeur sur un char
     QString rslt = "'" ; //on est censé commencer l'exp par '
     while (i<s.size() && s[i].toLatin1() != '\'' ){  //tant que on a des char, et qu'on a pas de quote
@@ -135,8 +135,28 @@ QString Controleur::getExp(QString s){
 
     ++i ;
     if (i<s.size() && s[i].toLatin1() != 32) rslt = "" ; //on vérifie qu'il y est bien un espaces (acsii = 32) après '
-    if (!rslt.endsWith(" '")) rslt = "" ;   //on vérifie un peu la base, c'est à  dire que il y est des espaces et des quotes
-    if (!rslt.startsWith("' ")) rslt = "" ;
+    if (!rslt.endsWith("'")) rslt = "" ;   //on vérifie un peu la base, c'est à  dire que il y ait des quotes
+    if (!rslt.startsWith("'")) rslt = "" ;
+    return rslt ;
+
+}
+
+QString getPara(QString s){
+    int i = 0 ;   //pointeur sur un char
+    while (s[i++]!='(') ; //on cherche la première para
+    int count = 1 ;  //compte le nb de ( et )
+    QString rslt = "(" ; //on est censé commencer par (
+    while (i<s.size() && count != 0){  //tant que on a des char, ou tant que la [ n'est pas fermée
+        if (s[i].toLatin1() == '(') ++count ;  //si on ouvre un ( dans le (, on augmente count
+        if (s[i].toLatin1() == ')') --count ;   //si un ) se ferme, on dec count
+        rslt.push_back(s[i]);                 //on ajoute les char au fur et à mesure
+        ++i ;
+    }
+
+    if (count > 0) rslt = "" ; //on vérifie que tt les ( ouverts soient fermés
+
+    if (!rslt.endsWith(")")) rslt = "" ;   //on vérifie un peu la base, c'est à  dire que il y ait (
+    if (!rslt.startsWith("(")) rslt = "" ;
     return rslt ;
 
 }
