@@ -33,12 +33,14 @@ void LiteraleManager::libererInstance(){
 void LiteraleManager::deleteLiterale(Literale* L) {
     int i = 0 ;
     while (i<tab.size()){
-        if (tab[i]==L)
+        if (tab[i]==L){
             tab.remove(i, 1) ;
+            delete &(*L) ;
+            qDebug()<<"nb Lit = "<<tab.size() ;
+            return ;
+        }
         ++i ;
     }
-    qDebug()<<"nb Lit = "<<tab.size() ;
-    delete(L) ;
 }
 
 
@@ -137,6 +139,8 @@ Literale& LiteraleManager::addLit(QString s) {
         Im.remove(0 , 1) ;
         Literale& LRe = addLit(Re) ;  //rappel de la fonction pour construire le litéral de la partie réelle
         Literale& LIm = addLit(Im) ;    //rappel de la fonction pour construire le litéral de la partie im
+        used.push_back(&LRe) ;
+        used.push_back(&LIm);
         A = Attributs (LRe.getValue().num , LRe.getValue().denom , LIm.getValue().num , LIm.getValue().denom) ;  //entrée de attribut
     }
     int i = choix_type(A) ;  //retourne le type de A

@@ -29,7 +29,7 @@ public:
     Literale& top() const;
     void setNbItemsToAffiche(unsigned int n) { nbAffiche=n; }
     unsigned int getNbItemsToAffiche() const { return nbAffiche; }
-    void setMessage(const QString& m) { message=m; modificationEtat(); }
+    void setMessage(const QString& m) ;
     QString getMessage() const { return message; }
     bool isModified(){return modif ; }
     void NoModif() {modif = false ; }

@@ -9,7 +9,6 @@ Program::Program(Attributs a){
 }
 
 Program::~Program(){
-    delete this;
 }
 
 Program::Program(const Program &e) {

@@ -27,27 +27,14 @@ class MainWindow : public QMainWindow
 
     public:
     MainWindow();
-    static MainWindow& getInstance();
-    static void libererInstance();
-    void setTextEnter(QString s){
-        text_enter = s;
-    }
-
-    void printText();
-
+    ~MainWindow(){}
     private:
-
+    friend class ProgWindow;
     SecondWindow* editWindow;
     ProgWindow* progWindow;
     QWidget* mainArea;
     QHBoxLayout* mainSet;
-    // SINGLETON NECESSAIRE POUR CONNECT LE SLOT ENTER
-    struct Handler{
-        MainWindow* instance;
-        Handler():instance(0){}
-        ~Handler(){delete instance;}
-    };
-    static Handler handler;
+
     // ON DECLARE DES WIDGETS COMME PARENTS DES LAYOUTS POUR UTILISER LES METHODES SHOW/HIDE
     Keyboard* keyboard;
     scientific_pad* scientificPad;
@@ -77,7 +64,6 @@ class MainWindow : public QMainWindow
     Controleur* controleur;
 
 
-    QString text_enter;
     //TOOLBAR
     /*UNDO/REDO  => done
 
@@ -94,11 +80,11 @@ class MainWindow : public QMainWindow
     void sound_disable(){
         if(sound_enabled){
             sound_enabled = false;
-            sound_lock->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/speaker_disabled.png"));
+            sound_lock->setIcon(QIcon("C:\\\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0-master\\projet_1_0\\images\\speaker_disabled.png"));
         }
         else{
             sound_enabled = true;
-            sound_lock->setIcon(QIcon("/home/deneux/Documents/UTC/Projets/projet_1_0/images/speaker.png"));
+            sound_lock->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0-master\\projet_1_0\\images\\speaker.png"));
         }
     }
 

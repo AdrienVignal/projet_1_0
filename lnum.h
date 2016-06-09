@@ -10,7 +10,7 @@ protected:
     LNum(const LNum& e);
     LNum& operator=(const LNum& e);
     friend class LiteraleManager;
-    virtual ~LNum() {}
+    virtual ~LNum() { }
 public:
 };
 
