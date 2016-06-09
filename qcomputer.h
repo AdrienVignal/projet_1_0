@@ -9,6 +9,8 @@
 #include <QDebug>
 #include <QVector>
 #include <QStack>
+#include <QTextStream>
+#include "declarations.h"
 #include "computer.h"
 class QComputer : public QWidget{
 Q_OBJECT
