@@ -1,7 +1,6 @@
 #include "declarations.h"
 #include "operateurs.h"
 #include "computer.h"
-#include <qmath.h>
 
 //ensemble des foncteurs concret construit pour éxécuter les opérandes
 //ainsi que ci necessaire une méthode check, qui vérifie si tt les condtions sont remplies pour faire le calcul
@@ -74,6 +73,7 @@ void division::operator()() {
     P.pop();
     if ((v2.getValue().num == 0) && (v2.getValue().ImNum==0)){
         P.setMessage("Erreur : division par zéro");
+        LiteraleManager::getInstance().removeLiterale(v2);
         return ; }
 
     Literale& v1=P.top();
@@ -100,6 +100,7 @@ void DIV::operator()() {
     P.pop() ;
     if ((v2.getValue().num == 0) && (v2.getValue().ImNum==0)){
         P.setMessage("Erreur : division par zéro");
+        LiteraleManager::getInstance().removeLiterale(v2);
         return ; }
 
     Literale& v1=P.top();
@@ -136,6 +137,7 @@ void MOD::operator()() {
     P.pop() ;
     if ((v2.getValue().num == 0) && (v2.getValue().ImNum==0)){
         P.setMessage("Erreur : division par zéro");
+        LiteraleManager::getInstance().removeLiterale(v2);
         return ; }
 
     Literale& v1=P.top();
@@ -595,232 +597,23 @@ void eval::operator()() {
     int i = LiteraleManager::getInstance().choix_type(res) ;
     if (i!=5 && i!=6){
          P.setMessage("Erreur : argument non évaluable");
+         P.push(v1);
          return ;
     }
     if (i == 5) ((Program&) v1).eval() ;
     if (i == 6) ((Expression&) v1).eval() ;
+
+    if (Controleur::getInstance()->getErreur()) {
+        Controleur::getInstance()->cancel() ;
+        P.setMessage("Erreur : mauvaise syntaxe");
+    }
+
+    LiteraleManager::getInstance().removeLiterale(v1);
+
+
     return ;
     }
         P.setMessage("Erreur : pas assez d'arguments");
 
 }
 
-void Cos::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=1){
-        Literale& v1=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qCos(v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-        }
-        else{
-        Attributs res(QMATH_H::qCos(v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}
-void Sin::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=1){
-        Literale& v1=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qSin(v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-        }
-        else{
-        Attributs res(QMATH_H::qSin(v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}
-void Tan::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=1){
-        Literale& v1=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qTan(v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-        }
-        else{
-        Attributs res(QMATH_H::qTan(v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}
-void Arccos::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=1){
-        Literale& v1=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qAcos(v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-
-        }
-        else{
-        Attributs res(QMATH_H::qAcos(v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}
-void Arcsin::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=1){
-        Literale& v1=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qAsin(v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-        }
-        else{
-        Attributs res(QMATH_H::qAsin(v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}
-void Arctan::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=1){
-        Literale& v1=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qAtan(v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-        }
-        else{
-        Attributs res(QMATH_H::qAtan(v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}
-
-void Exp::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=1){
-        Literale& v1=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qExp(v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-        }
-        else{
-        Attributs res(QMATH_H::qExp(v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}
-
-void Ln::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=1){
-        Literale& v1=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qLn(v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-        }
-        else{
-        Attributs res(QMATH_H::qLn(v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}
-
-void Sqrt::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=1){
-        Literale& v1=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qSqrt(v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-        }
-        else{
-        Attributs res(QMATH_H::qSqrt(v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}
-
-void Pow::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ;
-    if (P.stack.size() >=2){
-        Literale& v1=P.top();
-        P.pop();
-        Literale& v2=P.top();
-        P.pop();
-        if(std::isnan(QMATH_H::qPow(v2.getValue().num,v1.getValue().num))){
-            P.setMessage("Erreur argument incorrect");
-            P.push(v1);
-            P.push(v2);
-        }
-        else{
-        Attributs res(QMATH_H::qPow(v2.getValue().num,v1.getValue().num),1);
-
-        LiteraleManager::getInstance().removeLiterale(v1);
-        LiteraleManager::getInstance().removeLiterale(v2);
-        Literale& e=LiteraleManager::getInstance().addLit(res);
-        P.push(e);
-        }
-    }
-    else{
-        P.setMessage("Erreur : pas assez d'arguments");
-    }
-}

@@ -65,16 +65,6 @@ void Controleur::initFonct() { //création des foncteurs, et entré dans le map
     fonct["UNDO"] = new CtrlZ;
     fonct["REDO"] = new CtrlY;
     fonct["EVAL"] = new eval;
-    fonct["COS"] = new Cos;
-    fonct["SIN"] = new Sin;
-    fonct["TAN"] = new Tan;
-    fonct["ARCCOS"] = new Arccos;
-    fonct["ARCSIN"] = new Arcsin;
-    fonct["ARCTAN"] = new Arctan;
-    fonct["EXP"] = new Exp;
-    fonct["LN"] = new Ln;
-    fonct["SQRT"] = new Sqrt;
-    fonct["POW"] = new Pow;
 
 }
 
@@ -116,6 +106,13 @@ void Controleur::unRest() {
     expAff.stack = saves.GetStateDown() ;
     expAff.NoModif();
 }
+
+void Controleur::cancel(){
+    expAff.stack = saves.GetState0() ;
+    QVector<Literale*> c = expMng.getCreated();
+    expMng.deleteLiteraleTab(c);
+    expAff.NoModif();
+    }
 
 QString getProg(QString s){
     int i = 1 ;   //pointeur sur un char
@@ -171,4 +168,6 @@ QString getPara(QString s){
     return rslt ;
 
 }
+
+
 

@@ -22,6 +22,13 @@ void Pile::pop(){
     modif = true ;
 }
 
+void Pile::setMessage(const QString& m){
+    message=m;
+    modificationEtat();
+    if (!m.isEmpty())
+    Controleur::getInstance()->erreur(true) ;
+}
+
 
 void Pile::affiche(QTextStream& f) const{
     f<<"********************************************* \n";

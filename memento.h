@@ -3,23 +3,25 @@
 #include "declarations.h"
 #include "literalemanager_mere.h"
 
-struct mem{
-private:
-    QStack<Item> stack ;
-    QVector<Literale*> used ;
-    QVector<Literale*> created ;
-    mem(QStack<Item> s , QVector<Literale*> u ,QVector<Literale*> c  ): stack(s),used(u) , created(c){}
-    mem& operator=(const mem& e) ;
-    friend class Memento ;
-public:
-    QStack<Item> getStack() {return stack ; }
-    QVector<Literale*>& getUsed() {return used ; }
-    QVector<Literale*>& getCreated() {return created ; }
-};
+
 
 
 class Memento
 {
+
+    struct mem{
+    private:
+        QStack<Item> stack ;
+        QVector<Literale*> used ;
+        QVector<Literale*> created ;
+        mem(QStack<Item> s , QVector<Literale*> u ,QVector<Literale*> c  ): stack(s),used(u) , created(c){}
+        mem& operator=(const mem& e) ;
+        friend class Memento ;
+    public:
+        QStack<Item> getStack() {return stack ; }
+        QVector<Literale*>& getUsed() {return used ; }
+        QVector<Literale*>& getCreated() {return created ; }
+    };
 
     int MaxSaves ;
     int courrant ;
@@ -31,10 +33,13 @@ class Memento
     Memento& operator=(const Memento& e) ;
     friend class Controleur ;
 
+
+
 public:
     int getSize(){return save.size() ; }
     QStack<Item> GetState();
     QStack<Item> GetStateDown() ;
+    QStack<Item> GetState0() ;
     void addState(QStack<Item> st , QVector<Literale*> u ,QVector<Literale*> c ) ;
     void setMax ( int n) ;
     int getCourrant() {return courrant ; }

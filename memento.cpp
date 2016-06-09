@@ -2,7 +2,7 @@
 #include "computer.h"
 #include "memento.h"
 
-Memento::Memento( ):MaxSaves(10), courrant( 0){
+Memento::Memento( ):MaxSaves(3), courrant( 0){
     QStack<Item> s ;
     QVector<Literale*> u ;
     QVector<Literale*> c ;
@@ -29,6 +29,10 @@ QStack<Item> Memento::GetStateDown() {
     if (courrant > 1)
         courrant  = courrant -2 ;
     return save[courrant++].getStack();
+}
+
+QStack<Item> Memento::GetState0() {
+return save[courrant-1].getStack() ;
 }
 
 void Memento::addState(QStack<Item> st , QVector<Literale*> u ,QVector<Literale*> c ) {

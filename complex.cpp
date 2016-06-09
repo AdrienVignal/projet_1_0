@@ -11,8 +11,8 @@ Complex::Complex(Attributs a) {
 //Complex::Complex(LNum& r, LNum& i): Re(&r) , Im(&i)  {}
 
 Complex::~Complex()  {
-    //LiteraleManager::getInstance().deleteLiterale(Re);//détruit la partie réelle
-    //LiteraleManager::getInstance().deleteLiterale(Im);// détruit la partie im
+    LiteraleManager::getInstance().deleteLiterale(Re);//détruit la partie réelle
+    LiteraleManager::getInstance().deleteLiterale(Im);// détruit la partie im
 }
 
 Attributs Complex::getValue() const {
