@@ -30,6 +30,7 @@ class Complex ;
 class Program ;
 class Item ;
 class Expression ;
+class Atome ;
 
 
 

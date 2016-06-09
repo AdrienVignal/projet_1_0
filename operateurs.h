@@ -1,6 +1,8 @@
 #ifndef OPERATEURS_H
 #define OPERATEURS_H
 #include "declarations.h"
+#include <qmath.h>
+
 
 
 //ensemble des focnteurs qui serviront d'operateurs
@@ -219,7 +221,6 @@ public :
     void operator()() ;
     int arite() {return 1 ;}
 };
-
 class Cos : public operateur {
 public :
     Cos() {}

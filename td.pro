@@ -20,7 +20,8 @@ SOURCES += \
     expression.cpp \
     scientific.cpp \
     keyboard.cpp \
-    bouton_prog.cpp
+    bouton_prog.cpp \
+    atome.cpp
 
 HEADERS += \
     computer.h \
@@ -42,7 +43,8 @@ HEADERS += \
     expression.h \
     scientific.h \
     keyboard.h \
-    bouton_prog.h
+    bouton_prog.h \
+    atome.h
 
 FORMS +=
 

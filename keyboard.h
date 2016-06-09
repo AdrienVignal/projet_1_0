@@ -33,8 +33,11 @@ public :
     QPushButton* bmult;
     QPushButton* clear;
     QPushButton* space;
+    QPushButton* bComp;
+    QPushButton* bPo;
+    QPushButton* bPf;
+    QHBoxLayout* lBProg;
     Keyboard();
-    ~Keyboard(){}
 };
 
 #endif // KEYBOARD_H

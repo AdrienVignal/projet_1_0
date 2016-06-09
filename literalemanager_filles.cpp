@@ -19,6 +19,8 @@ ProgramManager::~ProgramManager(){}
 
 ExpressionManager::~ExpressionManager(){}
 
+AtomeManager::~AtomeManager(){}
+
 
 Fraction& FractionManager::getLit(Attributs a) {
     return *(new Fraction(a)) ;
@@ -45,6 +47,10 @@ Program& ProgramManager::getLit(Attributs a){
 
 Expression& ExpressionManager::getLit(Attributs a){
     return *(new Expression(a)) ;
+}
+
+Atome& AtomeManager::getLit(QString s , Literale* a){
+    return *(new Atome(s,a)) ;
 }
 
 

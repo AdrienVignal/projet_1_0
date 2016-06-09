@@ -2,12 +2,12 @@
 #define EXPRESSION_H
 #include "declarations.h"
 
-
+int lowerPrio(Expression* E);
 
 class Expression : public Literale{
 private:
     QString exp;
-    Expression(Attributs a):exp(a.s){}
+    Expression(Attributs a):exp(a.s){exp.remove(" ") ; }
     Expression(const Program& e);
     Expression& operator=(const Program& e);
     friend class LiteraleManager;
@@ -21,6 +21,7 @@ public:
 };
 
 QString convertToPolish(QString s) ;
+ ;
 
 
 #endif // EXPRESSION_H

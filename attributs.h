@@ -13,6 +13,7 @@ public:
     double ImDenom ;
     QString s;
     Attributs(double n=0 , double d=1, double nIm=0 , double dIm=1, QString m_s= "") ;
+    Attributs(QString m_s):num(0) , denom(1) , ImNum(0) , ImDenom(1) , s(m_s) {}
     void simplificationRe() ;
     void simplificationIm() ;
     bool operator==(Attributs a) ;

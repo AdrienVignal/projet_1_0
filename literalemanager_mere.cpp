@@ -79,9 +79,10 @@ void LiteraleManager::initmap() {
     corres[4] = new ComplexManager;
     corres[5] = new ProgramManager;
     corres[6] = new ExpressionManager;
+    corres[7] = new AtomeManager ;
 }
 void LiteraleManager::deleteTab(){
-for (int i = 1 ; i< 7 ; ++i)
+for (int i = 1 ; i< 8 ; ++i)
 delete corres[i] ;
 }
 

@@ -4,19 +4,8 @@
 
 
 
-
 QString Expression::toString() const {
-    QString source = exp;
-    QTextStream s (&source) ;
-    QString c ;
-    QString result  = "" ;
-    s>> c ;
-    while (c != "") {
-        result.push_back(c);
-        result.push_back(' ');
-         s>> c ;
-    }
-    return result ;
+    return exp ;
 }
 
 
@@ -77,7 +66,6 @@ QString convertToPolish(QString s) {
         else{
             if (  s[i].isDigit()){ //si on a un nombre
                 while((i<s.size()) && (!charSpe.contains(s[i]))){  //tant qu'on voit pas d'op spé, et qu'il y a des trucs
-                    if (!s[i].isDigit()) return "ERROR" ; //si pas nb ou op spé, erreur
                     result.push_back(s[i]);   //on le met dans result
                     s.remove(i,1) ;          //on l'enlève de source
                 }
@@ -115,7 +103,7 @@ QString convertToPolish(QString s) {
                 else{
                     if (s[i].isLetter() ){ //si on a une lettre, alors 3 cas : opérateur (opérande) ,  variable (atome) , ou racourcis d'opérateur (atome)
                         QString temp ;
-                        while((i<s.size()) && s[i].isLetterOrNumber() ){  //tant qu'on a des lettres ou des chiffres
+                        while((i<s.size()) && !s[i].isLetterOrNumber() ){  //tant qu'on a des lettres ou des chiffres
                             temp.push_back(s[i]);   //on sauvegarde dans op
                             s.remove(i,1) ;          //on l'enlève de source
                         }
@@ -149,5 +137,34 @@ QString convertToPolish(QString s) {
     qDebug()<<"Le resultat est : "<<result ;
     return result ;
 }
+
+int lowerPrio(Expression* E)  {
+    QString s = E->toString() ;
+    int i = 5 ; //on commence à 5, si jamais il y a des op en plus, avec plus de prio
+
+    QMap<QChar , int> charSpe ;
+    charSpe['+'] = 1 ;
+    charSpe['-'] = 1 ;
+    charSpe['/'] = 2 ;
+    charSpe['*'] = 2 ;
+    charSpe['$'] = 3 ;
+    charSpe[','] = 0 ;
+
+    while(!s.isEmpty()){
+        if(s[0]=='('){    //si bloc (..) , on veut l'enlever
+            QString temp = getPara(s) ;         //on prend le bloc ( .... ) ;
+            int taille = temp.size() ;
+            if (taille == 0) s ="" ;
+            s.remove(0 , taille) ;              //on l'enlève de la chaine source
+            }
+        else{
+            if(charSpe.contains(s[0])) if(i > charSpe[s[0]]) i = charSpe[s[0]] ;  //si op spé, et si prio plus gd, on augmente
+            s.remove(0,1) ;
+        }
+
+        }
+    return i ;
+    }
+
 
 

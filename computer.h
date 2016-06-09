@@ -13,6 +13,7 @@
 #include "controleur.h"
 #include "attributs.h"
 #include "expression.h"
+#include "atome.h"
 
 
 //fichier permettant d'inclure tous les autres

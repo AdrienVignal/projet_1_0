@@ -65,7 +65,16 @@ void Controleur::initFonct() { //création des foncteurs, et entré dans le map
     fonct["UNDO"] = new CtrlZ;
     fonct["REDO"] = new CtrlY;
     fonct["EVAL"] = new eval;
-
+    fonct["COS"] = new Cos;
+    fonct["SIN"] = new Sin;
+    fonct["TAN"] = new Tan;
+    fonct["ARCCOS"] = new Arccos;
+    fonct["ARCSIN"] = new Arcsin;
+    fonct["ARCTAN"] = new Arctan;
+    fonct["EXP"] = new Exp;
+    fonct["LN"] = new Ln;
+    fonct["SQRT"] = new Sqrt;
+    fonct["POW"] = new Pow;
 }
 
 Controleur::~Controleur() {}
@@ -118,6 +127,7 @@ QString getProg(QString s){
     int i = 1 ;   //pointeur sur un char
     int count = 1 ;  //compte le nb de [ et ]
     QString rslt = "[" ; //on est censé commencer le prog par [
+    if (!s.contains("]")) return"" ;
     while (i<s.size() && count != 0){  //tant que on a des char, ou tant que la [ n'est pas fermée
         if (s[i].toLatin1() == '[') ++count ;  //si on ouvre un prog dans le prog, on augmente count
         if (s[i].toLatin1() == ']') --count ;   //si un prog se ferme, on dec count
@@ -153,6 +163,7 @@ QString getPara(QString s){
     int i = 0 ;   //pointeur sur un char
     while (s[i++]!='(') ; //on cherche la première para
     int count = 1 ;  //compte le nb de ( et )
+    if (!s.contains(")")) return"" ;
     QString rslt = "(" ; //on est censé commencer par (
     while (i<s.size() && count != 0){  //tant que on a des char, ou tant que la [ n'est pas fermée
         if (s[i].toLatin1() == '(') ++count ;  //si on ouvre un ( dans le (, on augmente count
@@ -168,6 +179,5 @@ QString getPara(QString s){
     return rslt ;
 
 }
-
 
 

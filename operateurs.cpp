@@ -8,8 +8,45 @@
 void adition::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ; // accède à la pile
     if (P.stack.size() >= 2){  //vérifie s'il y a assez de litérale pour exécuter l'instructructuon
+
+
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Literale& v2=P.top(); //prend la première litérale
+            P.pop();
+            if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                Literale& v1=P.top();  //prend la deuxième
+                P.pop();
+                QString s =v1.toString() ;
+                    s.push_back('+');
+                    s.push_back(v2.toString());
+                    s.remove("'") ;
+                    s.push_back("'");
+                    s.push_front("'");
+                    Attributs res = Attributs(s) ;
+                    LiteraleManager::getInstance().removeLiterale(v1);  //destruction des anciennes litérales
+                    LiteraleManager::getInstance().removeLiterale(v2);
+                    Literale& e=LiteraleManager::getInstance().addLit(res);  //création d'une nouvelle litérale à partir de res
+                    P.push(e);  // on push la nouvele litérale
+                    return ;
+            }
+            else{
+                P.push(v2);
+                if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                    Controleur::getInstance()->commande("EVAL");
+                    if (Controleur::getInstance()->getErreur())return ;
+                }
+            }
+
+
+        }
     Literale& v2=P.top(); //prend la première litérale
     P.pop();
+
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
+
     Literale& v1=P.top();  //prend la deuxième
     P.pop();
     Attributs res;
@@ -17,7 +54,7 @@ void adition::operator()() {
     LiteraleManager::getInstance().removeLiterale(v1);  //destruction des anciennes litérales
     LiteraleManager::getInstance().removeLiterale(v2);
     Literale& e=LiteraleManager::getInstance().addLit(res);  //création d'une nouvelle litérale à partir de res
-    P.push(e);  // on push la nouele litérale
+    P.push(e);  // on push la nouvele litérale
     }
     else{
         P.setMessage("Erreur : pas assez d'arguments");
@@ -27,8 +64,44 @@ void adition::operator()() {
 void soustraction::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 2){
+
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Literale& v2=P.top(); //prend la première litérale
+            P.pop();
+            if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                Literale& v1=P.top();  //prend la deuxième
+                P.pop();
+                QString s =v1.toString() ;
+                    s.push_back('-');
+                    s.push_back(v2.toString());
+                    s.remove("'") ;
+                    s.push_back("'");
+                    s.push_front("'");
+                    Attributs res = Attributs(s) ;
+                    LiteraleManager::getInstance().removeLiterale(v1);  //destruction des anciennes litérales
+                    LiteraleManager::getInstance().removeLiterale(v2);
+                    Literale& e=LiteraleManager::getInstance().addLit(res);  //création d'une nouvelle litérale à partir de res
+                    P.push(e);  // on push la nouvele litérale
+                    return ;
+            }
+            else{
+                P.push(v2);
+                if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                    Controleur::getInstance()->commande("EVAL");
+                    if (Controleur::getInstance()->getErreur())return ;
+                }
+            }
+
+
+        }
+
     Literale& v2=P.top();
     P.pop();
+
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v1=P.top();
     P.pop();
     Attributs res;
@@ -47,8 +120,48 @@ void soustraction::operator()() {
 void multiplication::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 2){
+
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Literale& v2=P.top(); //prend la première litérale
+            P.pop();
+            if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                Literale& v1=P.top();  //prend la deuxième
+                P.pop();
+                QString s =v1.toString() ;
+                    if(lowerPrio((Expression*) &v1)<2){
+                    s.push_front('(');
+                    s.push_back(')');
+                    }
+                    s.push_back('*');
+                    if(lowerPrio((Expression*) &v2)<2)  s.push_back('(');
+                    s.push_back(v2.toString());
+                    if(lowerPrio((Expression*)&v2)<2) s.push_back(')');
+                    s.remove("'") ;
+                    s.push_back("'");
+                    s.push_front("'");
+                    Attributs res = Attributs(s) ;
+                    LiteraleManager::getInstance().removeLiterale(v1);  //destruction des anciennes litérales
+                    LiteraleManager::getInstance().removeLiterale(v2);
+                    Literale& e=LiteraleManager::getInstance().addLit(res);  //création d'une nouvelle litérale à partir de res
+                    P.push(e);  // on push la nouvele litérale
+                    return ;
+            }
+            else{
+                P.push(v2);
+                if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                    Controleur::getInstance()->commande("EVAL");
+                    if (Controleur::getInstance()->getErreur())return ;
+                }
+            }
+
+
+        }
     Literale& v2=P.top();
     P.pop();
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v1=P.top();
     P.pop();
     Attributs res;
@@ -69,6 +182,43 @@ void division::operator()() {
 
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 2){
+
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Literale& v2=P.top(); //prend la première litérale
+            P.pop();
+            if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                Literale& v1=P.top();  //prend la deuxième
+                P.pop();
+                QString s =v1.toString() ;
+                    if(lowerPrio((Expression*) &v1)<2){
+                    s.push_front('(');
+                    s.push_back(')');
+                    }
+                    s.push_back('/');
+                    if(lowerPrio((Expression*) &v2)<2)  s.push_back('(');
+                    s.push_back(v2.toString());
+                    if(lowerPrio((Expression*)&v2)<2) s.push_back(')');
+                    s.remove("'") ;
+                    s.push_back("'");
+                    s.push_front("'");
+                    Attributs res = Attributs(s) ;
+                    LiteraleManager::getInstance().removeLiterale(v1);  //destruction des anciennes litérales
+                    LiteraleManager::getInstance().removeLiterale(v2);
+                    Literale& e=LiteraleManager::getInstance().addLit(res);  //création d'une nouvelle litérale à partir de res
+                    P.push(e);  // on push la nouvele litérale
+                    return ;
+            }
+            else{
+                P.push(v2);
+                if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                    Controleur::getInstance()->commande("EVAL");
+                    if (Controleur::getInstance()->getErreur())return ;
+                }
+            }
+
+
+        }
+
     Literale& v2=P.top();
     P.pop();
     if ((v2.getValue().num == 0) && (v2.getValue().ImNum==0)){
@@ -76,6 +226,10 @@ void division::operator()() {
         LiteraleManager::getInstance().removeLiterale(v2);
         return ; }
 
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v1=P.top();
     P.pop();
     Attributs res;
@@ -95,14 +249,26 @@ void DIV::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 2){
 
+
+
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v2=P.top();
     if (! DIV::check(v2)) return ;
+
     P.pop() ;
     if ((v2.getValue().num == 0) && (v2.getValue().ImNum==0)){
         P.setMessage("Erreur : division par zéro");
         LiteraleManager::getInstance().removeLiterale(v2);
         return ; }
 
+
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v1=P.top();
     if (! DIV::check(v1)) {
         P.push(v2) ;
@@ -131,7 +297,10 @@ bool DIV::check(Literale& L) const {
 void MOD::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 2){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v2=P.top();
     if (! MOD::check(v2)) return ;
     P.pop() ;
@@ -139,7 +308,10 @@ void MOD::operator()() {
         P.setMessage("Erreur : division par zéro");
         LiteraleManager::getInstance().removeLiterale(v2);
         return ; }
-
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v1=P.top();
     if (! MOD::check(v1)){
         P.push(v2) ;
@@ -168,6 +340,42 @@ bool MOD::check(Literale& L) const {
 void Ima::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 2){
+
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Literale& v2=P.top(); //prend la première litérale
+            P.pop();
+            if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                Literale& v1=P.top();  //prend la deuxième
+                P.pop();
+                QString s =v1.toString() ;
+                    if(lowerPrio((Expression*) &v1)<3){
+                    s.push_front('(');
+                    s.push_back(')');
+                    }
+                    s.push_back('$');
+                    if(lowerPrio((Expression*) &v2)<3)  s.push_back('(');
+                    s.push_back(v2.toString());
+                    if(lowerPrio((Expression*)&v2)<3) s.push_back(')');
+                    s.remove("'") ;
+                    s.push_back("'");
+                    s.push_front("'");
+                    Attributs res = Attributs(s) ;
+                    LiteraleManager::getInstance().removeLiterale(v1);  //destruction des anciennes litérales
+                    LiteraleManager::getInstance().removeLiterale(v2);
+                    Literale& e=LiteraleManager::getInstance().addLit(res);  //création d'une nouvelle litérale à partir de res
+                    P.push(e);  // on push la nouvele litérale
+                    return ;
+            }
+            else{
+                P.push(v2);
+                if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+                    Controleur::getInstance()->commande("EVAL");
+                    if (Controleur::getInstance()->getErreur())return ;
+                }
+            }
+
+
+        }
 
     Literale& v2=P.top();
     if (! Ima::check(v2)) return ;
@@ -202,7 +410,10 @@ void Neg::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 1){
 
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
 
     Literale& v1=P.top();
     P.pop() ;
@@ -223,7 +434,10 @@ void Num::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 1){
 
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
 
     Literale& v1=P.top();
     if (! Num::check(v1))
@@ -251,7 +465,10 @@ bool Num::check(Literale& L) const {
 void Den::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 1){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     if (! Den::check(v1))
         return ;
@@ -278,7 +495,10 @@ bool Den::check(Literale& L) const {
 void Re::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 1){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     P.pop() ;
 
@@ -296,7 +516,10 @@ void Re::operator()() {
 void Im::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >= 1){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     P.pop() ;
 
@@ -314,9 +537,16 @@ void Im::operator()() {
 void Eg::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >=2){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     P.pop() ;
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v2=P.top();
     P.pop() ;
 
@@ -337,9 +567,16 @@ void Eg::operator()() {
 void Diff::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >=2){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     P.pop() ;
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v2=P.top();
     P.pop() ;
 
@@ -360,10 +597,17 @@ void Diff::operator()() {
 void InfEg::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >=2){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     if (!InfEg::check(v1) )return ;
     P.pop() ;
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v2=P.top();
     if (!InfEg::check(v2) ){
         P.push(v1);
@@ -398,10 +642,17 @@ return false ;
 void SupEg::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >=2){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     if (!SupEg::check(v1) )return ;
     P.pop() ;
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v2=P.top();
     if (!SupEg::check(v2) ){
         P.push(v1);
@@ -436,10 +687,17 @@ return false ;
 void Inf::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >=2){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     if (!Inf::check(v1) )return ;
     P.pop() ;
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v2=P.top();
     if (!Inf::check(v2) ){
         P.push(v1);
@@ -472,10 +730,17 @@ return false ;
 void Sup::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >=2){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     if (!Sup::check(v1) )return ;
     P.pop() ;
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v2=P.top();
     if (!Sup::check(v2) ){
         P.push(v1);
@@ -508,9 +773,16 @@ return false ;
 void ET::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >=2){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     P.pop() ;
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v2=P.top();
     P.pop() ;
 
@@ -531,9 +803,16 @@ void ET::operator()() {
 void OU::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >=2){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     P.pop() ;
+    if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+        Controleur::getInstance()->commande("EVAL");
+        if (Controleur::getInstance()->getErreur())return ;
+    }
     Literale& v2=P.top();
     P.pop() ;
 
@@ -554,7 +833,10 @@ void OU::operator()() {
 void NON::operator()() {
     Pile& P = Controleur::getInstance()->getPile() ;
     if (P.stack.size() >=1){
-
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
     Literale& v1=P.top();
     P.pop() ;
 
@@ -617,3 +899,267 @@ void eval::operator()() {
 
 }
 
+
+void Cos::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qCos(v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+        }
+        else{
+        Attributs res(QMATH_H::qCos(v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+void Sin::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qSin(v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+        }
+        else{
+        Attributs res(QMATH_H::qSin(v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+void Tan::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qTan(v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+        }
+        else{
+        Attributs res(QMATH_H::qTan(v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+void Arccos::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qAcos(v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+
+        }
+        else{
+        Attributs res(QMATH_H::qAcos(v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+void Arcsin::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qAsin(v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+        }
+        else{
+        Attributs res(QMATH_H::qAsin(v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+void Arctan::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qAtan(v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+        }
+        else{
+        Attributs res(QMATH_H::qAtan(v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void Exp::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qExp(v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+        }
+        else{
+        Attributs res(QMATH_H::qExp(v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void Ln::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qLn(v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+        }
+        else{
+        Attributs res(QMATH_H::qLn(v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void Sqrt::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qSqrt(v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+        }
+        else{
+        Attributs res(QMATH_H::qSqrt(v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void Pow::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=2){
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v1=P.top();
+        P.pop();
+        if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
+            Controleur::getInstance()->commande("EVAL");
+            if (Controleur::getInstance()->getErreur())return ;
+        }
+        Literale& v2=P.top();
+        P.pop();
+        if(std::isnan(QMATH_H::qPow(v2.getValue().num,v1.getValue().num))){
+            P.setMessage("Erreur argument incorrect");
+            P.push(v1);
+            P.push(v2);
+        }
+        else{
+        Attributs res(QMATH_H::qPow(v2.getValue().num,v1.getValue().num),1);
+
+        LiteraleManager::getInstance().removeLiterale(v1);
+        LiteraleManager::getInstance().removeLiterale(v2);
+        Literale& e=LiteraleManager::getInstance().addLit(res);
+        P.push(e);
+        }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}

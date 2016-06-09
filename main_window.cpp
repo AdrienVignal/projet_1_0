@@ -3,6 +3,23 @@
 #include "prog_window.h"
 #include <Qt>
 
+
+MainWindow::Handler MainWindow::handler=MainWindow::Handler();
+
+MainWindow& MainWindow::getInstance(){
+    if (handler.instance==0) {
+        handler.instance=new MainWindow;
+    }
+    return *handler.instance;
+}
+
+void MainWindow::libererInstance(){
+    delete(handler.instance) ;
+    handler.instance=0;
+}
+
+
+
 MainWindow::MainWindow()
 {
     //CREATION DU MENU
@@ -25,12 +42,12 @@ MainWindow::MainWindow()
 
     QAction *actionRedo = new QAction("&Redo", this);  // AJOUT DU "Redo"
     menuOption->addAction(actionRedo);
-    actionRedo->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0-master\\projet_1_0\\images\\arrow_redo.png"));
+    actionRedo->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\arrow_redo.png"));
     actionRedo->setShortcut(QKeySequence(tr("Ctrl+y")));
 
     QAction *actionUndo = new QAction("&Undo", this);  // AJOUT DU "Undo"
     menuOption->addAction(actionUndo);
-    actionUndo->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0-master\\projet_1_0\\images\\arrow_undo.png"));
+    actionUndo->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\arrow_undo.png"));
     actionUndo->setShortcut(QKeySequence(tr("Ctrl+z")));
 
     QMenu *menuAide = menuBar()->addMenu("&Aide");
@@ -67,7 +84,6 @@ MainWindow::MainWindow()
     controleur = Controleur::getInstance(LiteraleManager::getInstance() , *pile) ;
     message = new QLineEdit() ;
     commande = new QLineEdit() ;
-    commande->setFocus();
     vuePile = new QTableWidget (pile->getNbItemsToAffiche(),1) ;
     pile_create();
     topLayout = new QHBoxLayout();
@@ -97,17 +113,17 @@ MainWindow::MainWindow()
 
     bottomLayout->addWidget(commande);
     bottomLayout->addWidget(enter);
-    enter->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0-master\\projet_1_0\\images\\enter-arrow.png"));
+    enter->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\enter-arrow.png"));
     enter->setFlat(true);
     enter->setFocusPolicy(Qt::NoFocus);
 
     connect(enter,SIGNAL(clicked(bool)),this,SLOT(getNextCommande()));
 
     //BOUTON PILE SETTINGS + CONNECT
-    pile_plus->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0-master\\projet_1_0\\images\\add.png"));
+    pile_plus->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\add.png"));
     pile_plus->setFlat(true);
     pile_plus->setFocusPolicy(Qt::NoFocus);
-    pile_moins->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0-master\\projet_1_0\\images\\minus.png"));
+    pile_moins->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\minus.png"));
     pile_moins->setFlat(true);
     pile_moins->setFocusPolicy(Qt::NoFocus);
 
@@ -132,17 +148,25 @@ MainWindow::MainWindow()
 
     //SOUND_LOCK SETTINGS
     sound_lock = new QPushButton();
-    sound_lock->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0-master\\projet_1_0\\images\\speaker.png"));
+    sound_lock->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\speaker.png"));
     sound_lock->setFlat(true);
     sound_lock->setFocusPolicy(Qt::NoFocus);
     connect(sound_lock,SIGNAL(clicked(bool)),this,SLOT(sound_disable()));
 
-    //TOPLAYOUT SETTINGS
+    //GESTION DES CONNECTS DU SCIENTIFIC_PAD
 
-
-    // LA PILE
-
-
+    connect(scientificPad->cos, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->sin, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->tan, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->arccos, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->arcsin, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->arctan, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->sqrt, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->puis, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->exp, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->ln, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->div, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->mod, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
     
 
     //GESTION DES CONNECTS DU CONTROLSCREEN
@@ -167,6 +191,9 @@ MainWindow::MainWindow()
     connect(keyboard->bmult,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
     connect(keyboard->clear,SIGNAL(clicked(bool)),commande, SLOT(clear()));
     connect(keyboard->space,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bComp,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bPo,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bPf,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
 
 
     //CREATION DES LIENS ENTRE LES LAYOUTS
@@ -295,9 +322,7 @@ void MainWindow::getNextCommande(QString repet)
     }
     controleur->sauvegarde();
     refresh() ;
-    qDebug()<<"erreur = "<<controleur->getErreur() ;
     controleur->erreur(false) ;
-
 }
 
 void MainWindow::pile_create(){
@@ -316,4 +341,9 @@ void MainWindow::pile_create(){
         vuePile->setItem(i , 0 , new QTableWidgetItem("")) ;
     }
     refresh();
+}
+
+void MainWindow::printText(){
+    getNextCommande(text_enter);
+    qDebug() << "printText()" << text_enter;
 }

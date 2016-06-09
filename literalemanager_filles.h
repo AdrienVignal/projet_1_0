@@ -49,4 +49,12 @@ class ExpressionManager : public LiteraleManager{
     friend class LiteraleManager;
 };
 
+class AtomeManager : public LiteraleManager{
+    Atome& getLit(QString s , Literale* a) ;  //créé un objet expression
+    AtomeManager() {}
+    ~AtomeManager() ;
+    std::map<QString , Atome*> variables ;
+    friend class LiteraleManager;
+};
+
 #endif // LITERALEMANAGER_FILLES_H
