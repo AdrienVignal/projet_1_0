@@ -16,10 +16,10 @@
 #include <QDebug>
 #include "computer.h"
 #include "secondwindow.h"
-#include "prog_window.h"
 #include "controleur.h"
 #include "scientific.h"
 #include "keyboard.h"
+#include "prog_window.h"
 
 class MainWindow : public QMainWindow
 {
@@ -27,12 +27,27 @@ class MainWindow : public QMainWindow
 
     public:
     MainWindow();
+    static MainWindow& getInstance();
+    static void libererInstance();
+    void setTextEnter(QString s){
+        text_enter = s;
+    }
+
+    void printText();
+
     private:
+
     SecondWindow* editWindow;
     ProgWindow* progWindow;
     QWidget* mainArea;
     QHBoxLayout* mainSet;
-
+    // SINGLETON NECESSAIRE POUR CONNECT LE SLOT ENTER
+    struct Handler{
+        MainWindow* instance;
+        Handler():instance(0){}
+        ~Handler(){delete instance;}
+    };
+    static Handler handler;
     // ON DECLARE DES WIDGETS COMME PARENTS DES LAYOUTS POUR UTILISER LES METHODES SHOW/HIDE
     Keyboard* keyboard;
     scientific_pad* scientificPad;
@@ -62,6 +77,7 @@ class MainWindow : public QMainWindow
     Controleur* controleur;
 
 
+    QString text_enter;
     //TOOLBAR
     /*UNDO/REDO  => done
 
@@ -147,6 +163,8 @@ class MainWindow : public QMainWindow
     void size_max(){
         this->setFixedSize(900,350);
     }
+
+
 };
 
 

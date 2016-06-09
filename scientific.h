@@ -8,7 +8,7 @@
 
 class scientific_pad : public QWidget{
     Q_OBJECT
-private:
+public:
     QVBoxLayout* main;
     QHBoxLayout* ligne1;
     QHBoxLayout* ligne2;
@@ -25,9 +25,7 @@ private:
     QPushButton* mod;
     QPushButton* exp;
     QPushButton* ln;
-public:
     scientific_pad();
-    ~scientific_pad(){delete this;}
 };
 
 #endif // SCIENTIFIC_H

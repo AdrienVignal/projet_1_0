@@ -219,5 +219,85 @@ public :
     void operator()() ;
     int arite() {return 1 ;}
 };
+
+class Cos : public operateur {
+public :
+    Cos() {}
+    virtual ~Cos() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class Sin : public operateur {
+public :
+    Sin() {}
+    virtual ~Sin() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class Tan : public operateur {
+public :
+    Tan() {}
+    virtual ~Tan() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class Arccos : public operateur {
+public :
+    Arccos() {}
+    virtual ~Arccos() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class Arcsin : public operateur {
+public :
+    Arcsin() {}
+    virtual ~Arcsin() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class Arctan : public operateur {
+public :
+    Arctan() {}
+    virtual ~Arctan() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class Exp : public operateur {
+public :
+    Exp() {}
+    virtual ~Exp() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class Ln : public operateur {
+public :
+    Ln() {}
+    virtual ~Ln() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class Sqrt : public operateur {
+public :
+    Sqrt() {}
+    virtual ~Sqrt() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class Pow : public operateur {
+public :
+    Pow() {}
+    virtual ~Pow() {}
+    void operator()() ;
+    int arite() {return 2 ;}
+};
 #endif // OPERATEURS_H
 

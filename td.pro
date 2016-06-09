@@ -19,7 +19,8 @@ SOURCES += \
     memento.cpp \
     expression.cpp \
     scientific.cpp \
-    keyboard.cpp
+    keyboard.cpp \
+    bouton_prog.cpp
 
 HEADERS += \
     computer.h \
@@ -40,7 +41,8 @@ HEADERS += \
     memento.h \
     expression.h \
     scientific.h \
-    keyboard.h
+    keyboard.h \
+    bouton_prog.h
 
 FORMS +=
 

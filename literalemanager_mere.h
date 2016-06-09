@@ -37,7 +37,7 @@ public:
     static void libererInstance();
     QVector<Literale*> getUsed() {QVector<Literale*>tmp = used ;used.clear() ; return tmp ;  }
     QVector<Literale*> getCreated() {QVector<Literale*>tmp = created ;created.clear() ; return tmp ; }
-
+    friend class ProgWindow;
 };
 
 #endif // LITERALEMANAGER_MERE_H

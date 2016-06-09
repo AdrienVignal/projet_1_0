@@ -8,6 +8,9 @@
 #include <QVBoxLayout>
 #include <QHeaderView>
 #include <QDebug>
+#include "declarations.h"
+#include "bouton_prog.h"
+
 
 class ProgWindow : public QWidget
 {
@@ -15,18 +18,22 @@ class ProgWindow : public QWidget
 
     public:
     ProgWindow();
+    friend class MainWindow;
+    void refresh_content();
+
     private:
     QVBoxLayout *main;
     QTableWidget *progVue;
+    unsigned int nb_Affiche;
+    unsigned int nb ;
     QPushButton *valider;
-    QPushButton *annuler;
     QHBoxLayout *bottom;
     private slots:
-    // A Créer -> connection avec le vector de prog
-    //void refresh_content();
+
     void closeProgWindow();
-    void action_annuler();
-    void action_valider();
+    void action_save_prog();
+
+
 };
 
 #endif // PROG_WINDOW_H

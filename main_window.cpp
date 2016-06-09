@@ -1,6 +1,24 @@
 #include "main_window.h"
 #include "declarations.h"
+#include "prog_window.h"
 #include <Qt>
+
+
+MainWindow::Handler MainWindow::handler=MainWindow::Handler();
+
+MainWindow& MainWindow::getInstance(){
+    if (handler.instance==0) {
+        handler.instance=new MainWindow;
+    }
+    return *handler.instance;
+}
+
+void MainWindow::libererInstance(){
+    delete(handler.instance) ;
+    handler.instance=0;
+}
+
+
 
 MainWindow::MainWindow()
 {
@@ -43,6 +61,8 @@ MainWindow::MainWindow()
     connect(actionClavier, SIGNAL(triggered()), this, SLOT(afficher_clavier()));
     actionClavier->setCheckable(true);
     actionScientifique->setCheckable(true);
+    connect(actionUndo, SIGNAL(triggered(bool)), this, SLOT(getNextCommande("UNDO")));
+    connect(actionRedo, SIGNAL(triggered(bool)), this, SLOT(getNextCommande("REDO")));
     // CONNECT DU PROGEDIT
 
     connect(actionProg,SIGNAL(triggered(bool)), this, SLOT(openProgWindow()));
@@ -67,6 +87,7 @@ MainWindow::MainWindow()
     message = new QLineEdit() ;
     commande = new QLineEdit() ;
     vuePile = new QTableWidget (pile->getNbItemsToAffiche(),1) ;
+    pile_create();
     topLayout = new QHBoxLayout();
 
     middleLayout = new QHBoxLayout();
@@ -134,12 +155,20 @@ MainWindow::MainWindow()
     sound_lock->setFocusPolicy(Qt::NoFocus);
     connect(sound_lock,SIGNAL(clicked(bool)),this,SLOT(sound_disable()));
 
-    //TOPLAYOUT SETTINGS
+    //GESTION DES CONNECTS DU SCIENTIFIC_PAD
 
-
-    // LA PILE
-
-    pile_create();
+    connect(scientificPad->cos, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->sin, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->tan, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->arccos, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->arcsin, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->arctan, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->sqrt, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->puis, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->exp, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->ln, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->div, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
+    connect(scientificPad->mod, SIGNAL(clicked(bool)), this, SLOT(keyboardButtonPressed()));
     
 
     //GESTION DES CONNECTS DU CONTROLSCREEN
@@ -164,6 +193,9 @@ MainWindow::MainWindow()
     connect(keyboard->bmult,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
     connect(keyboard->clear,SIGNAL(clicked(bool)),commande, SLOT(clear()));
     connect(keyboard->space,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bComp,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bPo,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
+    connect(keyboard->bPf,SIGNAL(clicked(bool)),this, SLOT(keyboardButtonPressed()));
 
 
     //CREATION DES LIENS ENTRE LES LAYOUTS
@@ -222,6 +254,7 @@ void MainWindow::openEditProg(){
 
 void MainWindow::openProgWindow(){
     progWindow = new ProgWindow();
+    progWindow->refresh_content();
     progWindow->show();
 }
 
@@ -295,6 +328,7 @@ void MainWindow::getNextCommande(QString repet)
 
 void MainWindow::pile_create(){
     QStringList liste;
+    vuePile->setRowCount(pile->getNbItemsToAffiche()) ;
     for(unsigned int i=pile->getNbItemsToAffiche() ; i>0 ; i--)
     {
         QString str = QString::number(i) ;
@@ -308,4 +342,9 @@ void MainWindow::pile_create(){
         vuePile->setItem(i , 0 , new QTableWidgetItem("")) ;
     }
     refresh();
+}
+
+void MainWindow::printText(){
+    getNextCommande(text_enter);
+    qDebug() << "printText()" << text_enter;
 }

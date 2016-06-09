@@ -35,6 +35,20 @@ Keyboard::Keyboard(){
     b0->setFocusPolicy(Qt::NoFocus);
     b0->setFixedSize(45,45);
 
+
+    bComp = new QPushButton("$");
+    bComp->setFocusPolicy(Qt::NoFocus);
+    bComp->setFixedWidth(90);
+    bPo = new QPushButton("[");
+    bPo->setFocusPolicy(Qt::NoFocus);
+    bPo->setFixedWidth(40);
+    bPf = new QPushButton("]");
+    bPf->setFocusPolicy(Qt::NoFocus);
+    bPf->setFixedWidth(40);
+    lBProg = new QHBoxLayout();
+
+
+
     space = new QPushButton(" ");
     space->setFocusPolicy(Qt::NoFocus);
     space->setFixedSize(45,45);
@@ -44,15 +58,15 @@ Keyboard::Keyboard(){
 
     bplus = new QPushButton("+");
     bplus->setFocusPolicy(Qt::NoFocus);
-    bplus->setFixedSize(90,45);
+    bplus->setFixedWidth(90);
     bmoins = new QPushButton("-");
     bmoins->setFocusPolicy(Qt::NoFocus);
-    bmoins->setFixedSize(90,45);
+    bmoins->setFixedWidth(90);
     bdiv = new QPushButton("/");
     bdiv->setFocusPolicy(Qt::NoFocus);
-    bdiv->setFixedSize(90,45);
+    bdiv->setFixedWidth(90);
     bmult = new QPushButton("*");
-    bmult->setFixedSize(90,45);
+    bmult->setFixedWidth(90);;
     bmult->setFocusPolicy(Qt::NoFocus);
 
     ligne1 = new QHBoxLayout();
@@ -84,10 +98,15 @@ Keyboard::Keyboard(){
     ligne4->addWidget(b0);
     ligne4->addWidget(space);
 
+    lBProg->addWidget(bPo);
+    lBProg->addWidget(bPf);
+
     op_pad ->addWidget(bplus);
     op_pad ->addWidget(bmoins);
     op_pad ->addWidget(bdiv);
     op_pad ->addWidget(bmult);
+    op_pad->addWidget(bComp);
+    op_pad->addLayout(lBProg);
 
     num_pad->addLayout(ligne1);
     num_pad->addLayout(ligne2);

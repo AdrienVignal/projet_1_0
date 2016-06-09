@@ -9,6 +9,7 @@
 #include <QHeaderView>
 #include <QDebug>
 
+
 class SecondWindow : public QWidget
 {
     Q_OBJECT
@@ -22,8 +23,6 @@ class SecondWindow : public QWidget
     QPushButton *effacer;
     QHBoxLayout *bottom;
     private slots:
-    void closeEditProg();
-
-
+    void send_text();
 };
 #endif // SECONDWINDOW_H
