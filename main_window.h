@@ -34,6 +34,8 @@ class MainWindow : public QMainWindow
     }
 
     void printText();
+    friend class ProgWindow;
+    void getNextCommande(QString repet = "");
 
     private:
 
@@ -94,11 +96,11 @@ class MainWindow : public QMainWindow
     void sound_disable(){
         if(sound_enabled){
             sound_enabled = false;
-            sound_lock->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\speaker_disabled.png"));
+            sound_lock->setIcon(QIcon("\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\images/speaker_disabled.png"));
         }
         else{
             sound_enabled = true;
-            sound_lock->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\speaker.png"));
+            sound_lock->setIcon(QIcon("\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\images/speaker.png"));
         }
     }
 
@@ -144,7 +146,7 @@ class MainWindow : public QMainWindow
     void openProgWindow();
     void afficher_APropos();
     void refresh();
-    void getNextCommande(QString repet = "");
+    void slot_getNextCommande() {getNextCommande();}
     void keyboardButtonPressed()
     {
         QPushButton* button = qobject_cast<QPushButton*>( sender() );
@@ -163,7 +165,8 @@ class MainWindow : public QMainWindow
     void size_max(){
         this->setFixedSize(900,350);
     }
-
+    void open_context();
+    void save_context();
 
 };
 

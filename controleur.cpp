@@ -75,35 +75,50 @@ void Controleur::initFonct() { //création des foncteurs, et entré dans le map
     fonct["LN"] = new Ln;
     fonct["SQRT"] = new Sqrt;
     fonct["POW"] = new Pow;
+    fonct["STO"] = new Aff;
+    fonct["FORGET"] = new Forget;
+    fonct["DUP"] = new dup;
+    fonct["DROP"] = new drop;
+    fonct["SWAP"] = new echange;
+    fonct["CLEAR"] = new vide;
+    fonct["IFT"] = new SI;
 }
 
 Controleur::~Controleur() {}
 
 void Controleur::sauvegarde() {
     saves.getID();
-    QVector<Literale*> c = expMng.getCreated();
-
-
-    if (expAff.isModified() )
-        //saves.addState(expAff.stack , expMng.getUsed() , expMng.getCreated()) ;
-        saves.addState(expAff.stack , expMng.getUsed() , c) ;
+    if (expAff.isModified() ){
+        saves.addState(expAff.stack , expMng.getUsed() , expMng.getCreated()) ;
+    }
     expAff.NoModif();
    //qDebug()<<"taille mem = "<<saves.getSize() ;
    //qDebug()<<"courrant = "<<saves.getCourrant() ;
 
-   saves.getID();
+
+   //saves.getID();
 
 }
 
 void Controleur::commande(const QString& c){
-    if (estUneLiterale(c))
+    if (estUneLiterale(c)){
         expAff.push(expMng.addLit(c));  //on met dans la pile
-    else{
-        if(fonct.find(c) == fonct.end())  //vérifie que c est bien unr clé de map
+        return ;
+    }
+    if(expMng.isVariable(c)){
+        Attributs A = expMng.getAtome(c)->getVar() ;
+        Literale& L = expMng.addLit(A) ;
+        expAff.push(L);
+        if (expMng.choix_type(A) == 5 )
+            (*fonct["EVAL"])();
+        return ;
+    }
+
+        if(fonct.find(c) == fonct.end())  //vérifie que c est bien une clé de map
             expAff.setMessage("Erreur : commande inconnue");
         else
             (*fonct[c])(); //appelle de la surcharge de opérateur() du foncteur approprié
-    }
+
 
 }
 void Controleur::rest() {
@@ -119,6 +134,8 @@ void Controleur::unRest() {
 void Controleur::cancel(){
     expAff.stack = saves.GetState0() ;
     QVector<Literale*> c = expMng.getCreated();
+    int i = 0 ;
+    while(i<c.size()) qDebug()<<i<<" = "<<c[i++]->toString() ;
     expMng.deleteLiteraleTab(c);
     expAff.NoModif();
     }
@@ -179,5 +196,3 @@ QString getPara(QString s){
     return rslt ;
 
 }
-
-

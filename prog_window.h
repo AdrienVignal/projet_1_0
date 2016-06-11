@@ -18,19 +18,18 @@ class ProgWindow : public QWidget
 
     public:
     ProgWindow();
-    friend class MainWindow;
+    ~ProgWindow();
     void refresh_content();
 
     private:
     QVBoxLayout *main;
     QTableWidget *progVue;
-    unsigned int nb_Affiche;
-    unsigned int nb ;
+      int nb_Affiche;
+      int nb ;
     QPushButton *valider;
     QHBoxLayout *bottom;
     private slots:
 
-    void closeProgWindow();
     void action_save_prog();
 
 

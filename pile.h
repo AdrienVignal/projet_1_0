@@ -19,7 +19,7 @@ class Pile : public QObject {
     bool modif ;
 public:
     QStack<Item> stack;  //contener QStack. Il est en public afin d'éviter de faire getQStack() si on veut manipuer la pile
-    Pile():nbAffiche(6) , modif(false){stack = *(new QStack<Item> ); }
+    Pile():nbAffiche(5) , modif(false){stack = *(new QStack<Item> ); }
     ~Pile() ;
     void push(Literale& e);
     void pop();

@@ -34,9 +34,14 @@ void LiteraleManager::deleteLiterale(Literale* L) {
     int i = 0 ;
     while (i<tab.size()){
         if (tab[i]==L){
+            if (choix_type(L->getValue())==7){
+                Atome* A = (Atome*) L ;
+                if(isVariable(A->Name()))
+                    variables.erase(variables.find(A->Name())) ;
+            }
             tab.remove(i, 1) ;
             delete &(*L) ;
-            qDebug()<<"nb Lit = "<<tab.size() ;
+            qDebug()<<"Nombre Literales en mémoire = "<<tab.size() ;
             return ;
         }
         ++i ;
@@ -52,7 +57,12 @@ void LiteraleManager::deleteLiteraleTab(QVector<Literale*>& V) {
 }
 void LiteraleManager::removeLiterale(Literale& L) {
     used.push_back(&L);
-    //qDebug()<<"used = "<<used.size() ;
+    if (choix_type(L.getValue())==7){
+        Atome& A = (Atome&) L ;
+        if(isVariable(A.Name()))
+            variables.erase(variables.find(A.Name())) ;
+
+    }
 }
 
 int LiteraleManager::choix_type(Attributs a) {
@@ -60,6 +70,8 @@ int LiteraleManager::choix_type(Attributs a) {
         return 5;
     if (a.s.startsWith("'"))
         return 6;
+    if (!a.s.isEmpty())
+        return 7;
     if (a.ImNum != 0) // si imaginaire , retourne  4
         return 4 ;
     if (a.denom == 1 && floor(a.num)==a.num && a.num<=2147483647 && -1*a.num <= 2147483647 )
@@ -147,7 +159,7 @@ Literale& LiteraleManager::addLit(QString s) {
     int i = choix_type(A) ;  //retourne le type de A
     Literale& L =  corres[i]->getLit(A) ; //construit la litérale en fct du type et de A
     tab.push_back(&L);
-    qDebug()<<"nb Lit string = "<<tab.size() ;
+    qDebug()<<"Nombre Litérales en mémoire = "<<tab.size() ;
     created.push_back(&L);
     return L ;
 
@@ -158,8 +170,44 @@ Literale& LiteraleManager::addLit(Attributs a) {
     int i = choix_type(a ) ; //vérifie le type de a
     Literale& L = corres[i]->getLit(a);  //construit la litérale appropriéee
     tab.push_back(&L);
-    qDebug()<<"nb Lit Attributs = "<<tab.size() ;
+    qDebug()<<"Nombre Litérales en mémoire = "<<tab.size() ;
     created.push_back(&L);
     return L ;
 }
+
+void LiteraleManager::affect(QString s, Literale* L){
+
+    if (isVariable(s)) {
+        removeLiterale(*variables[s]) ;
+    }
+
+    Atome& A = corres[7]->getLit(s,L) ;
+    created.push_back(&A);
+    variables[s]= &A ;
+}
+
+bool LiteraleManager::isVariable(QString s){
+    return variables.find(s)!=variables.end() ;
+}
+
+bool LiteraleManager::activeVar(QVector<Literale*> V) {
+    for (int i = 0 ; i<V.size() ; ++i){
+        if  (choix_type(V[i]->getValue())==7){
+            Atome* A = (Atome*) V[i] ;
+            variables[A->Name()]=A ;
+        }
+    }
+}
+
+
+bool LiteraleManager::desactiveVar(QVector<Literale*> V) {
+    for (int i = 0 ; i<V.size() ; ++i){
+        if  (choix_type(V[i]->getValue())==7){
+            Atome* A = (Atome*) V[i] ;
+            if (isVariable(A->Name()))
+                variables.erase(variables.find(A->Name()));
+        }
+    }
+}
+
 

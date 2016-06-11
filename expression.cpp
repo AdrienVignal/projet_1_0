@@ -46,10 +46,9 @@ QString convertToPolish(QString s) {
 
 
     while(i<s.size()){
-
         if (s[i]=='('){
             QString temp = getPara(s) ;         //on prend le bloc ( .... ) ;
-                if (temp.isEmpty()) return "ERROR" ; //si vide, erreur
+            if (temp.isEmpty()) return "ERROR" ; //si vide, erreur
             int taille = temp.size() ;
             s.remove(i , taille) ;              //on l'enlève de la chaine source
             temp.remove(0,1) ;
@@ -64,7 +63,7 @@ QString convertToPolish(QString s) {
         }
 
         else{
-            if (  s[i].isDigit()){ //si on a un nombre
+            if (s[i].isDigit()){ //si on a un nombre
                 while((i<s.size()) && (!charSpe.contains(s[i]))){  //tant qu'on voit pas d'op spé, et qu'il y a des trucs
                     result.push_back(s[i]);   //on le met dans result
                     s.remove(i,1) ;          //on l'enlève de source
@@ -83,44 +82,50 @@ QString convertToPolish(QString s) {
                         op = "" ; //on remet à 0
                         result.push_back(" "); //on met un espace
                     }
-                   if (i> 0) {  //si jamais il est pas en tête de chaine
-                       if (charSpe[s[i]]>charSpe[s[i-1]]){ //on teste les priorités , si supérieur :
-                           i++ ; //on save
-                       }
-                       else{ //si inf ou égal
-                       --i ;  //on traite l'op en tête
-                       result.push_back(s[i]);  //on le push
-                       result.push_back(" "); //on met un espace
-                       s.remove(i,1) ;   //on le détruit
-                       }
-                   }
-                   else{
-                   if (s[i]==',') s.remove(i,1) ;  //enlève , qui sert juste de séparateur
-                   else i++ ;   //on "sauvegarde" l'op spé
+                    if (i> 0) {  //si jamais il est pas en tête de chaine
+                        if (charSpe[s[i]]>charSpe[s[i-1]]){ //on teste les priorités , si supérieur :
+                            i++ ; //on save
+                        }
+                        else{ //si inf ou égal
+                            --i ;  //on traite l'op en tête
+                            result.push_back(s[i]);  //on le push
+                            result.push_back(" "); //on met un espace
+                            s.remove(i,1) ;   //on le détruit
+                        }
+                    }
+                    else{
+                        if (s[i]==',') s.remove(i,1) ;  //enlève , qui sert juste de séparateur
+                        else i++ ;   //on "sauvegarde" l'op spé
                     }
                 }
 
                 else{
-                    if (s[i].isLetter() ){ //si on a une lettre, alors 3 cas : opérateur (opérande) ,  variable (atome) , ou racourcis d'opérateur (atome)
+
+                    if (s[i].isLetter() ){ //si on a une lettre, alors 2 cas : opérateur (opérande) ,  variable (atome)
                         QString temp ;
-                        while((i<s.size()) && !s[i].isLetterOrNumber() ){  //tant qu'on a des lettres ou des chiffres
+                        while((i<s.size()) && s[i].isLetterOrNumber() ){  //tant qu'on a des lettres ou des chiffres
                             temp.push_back(s[i]);   //on sauvegarde dans op
                             s.remove(i,1) ;          //on l'enlève de source
                         }
-
                         if (Controleur::getInstance()->estUnOperateur(temp) )
                             op = temp ;
                         else
-                            return "ERROR" ;
+                            if(LiteraleManager::getInstance().isVariable(temp)){
+
+                                result.push_back(temp) ;
+                                result.push_back(" ");
+                            }
+                            else
+                                return "ERROR" ;
                         if (neg){ //si il y avait - devant :
                             result.push_back("NEG ");
                             neg = false ;
                         }
                     }
-                    }
                 }
             }
         }
+    }
     if (!op.isEmpty()){  //si jamais un op normal est sauvegardé
         result.push_back(op); //on l'ajoute
         op = "" ; //on remet à 0

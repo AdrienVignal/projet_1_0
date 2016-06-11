@@ -1,5 +1,7 @@
 #include "prog_window.h"
-#include "literalemanager_mere.h"
+#include "declarations.h"
+#include "main_window.h"
+
 
 ProgWindow::ProgWindow() : nb_Affiche(0) , nb(0)
 
@@ -14,7 +16,7 @@ ProgWindow::ProgWindow() : nb_Affiche(0) , nb(0)
     progVue->setColumnWidth(1, 40);
 
     QStringList fonts;
-    fonts << "Programmes" << "pID";
+    fonts << "Programmes et Variables" << "ID";
     progVue->setHorizontalHeaderLabels(fonts);
     progVue->horizontalHeader()->setStretchLastSection(true);
     QStringList liste;
@@ -22,15 +24,16 @@ ProgWindow::ProgWindow() : nb_Affiche(0) , nb(0)
 
     // ON CREE LE TABLEAU
 
-    LiteraleManager& litMan = LiteraleManager::getInstance();
-    for(int i = litMan.tab.size(); i>0; --i){
-        if(litMan.choix_type(LiteraleManager::getInstance().tab[i-1]->getValue())==5){
+    for(Item* it = Controleur::getInstance()->getPile().stack.end()-1; it!=Controleur::getInstance()->getPile().stack.begin()-1; --it){
+        if(LiteraleManager::getInstance().choix_type(Attributs(it->getLiterale().toString()))==5){
             nb_Affiche++;
         }
     }
 
+    nb_Affiche+=LiteraleManager::getInstance().getMapAtom().size();
+
     progVue->setRowCount(nb_Affiche) ;
-    for(unsigned int i= nb_Affiche ; i>0 ; i--)
+    for(  int i= nb_Affiche ; i>0 ; i--)
     {
         QString str = QString::number(i) ;
         str+=" :";
@@ -40,7 +43,7 @@ ProgWindow::ProgWindow() : nb_Affiche(0) , nb(0)
     progVue->setVerticalHeaderLabels(liste) ;
 
 
-    for(unsigned int i=0 ; i<nb_Affiche ; i++)
+    for(  int i=0 ; i<nb_Affiche ; i++)
     {
         progVue->setItem(i , 0 , new QTableWidgetItem("")) ;
         progVue->setItem(i , 1 , new QTableWidgetItem("")) ;
@@ -67,30 +70,51 @@ ProgWindow::ProgWindow() : nb_Affiche(0) , nb(0)
 }
 
 
-void ProgWindow::closeProgWindow(){
-    delete this;
-}
 
 void ProgWindow::refresh_content(){
-
-    LiteraleManager& litMan = LiteraleManager::getInstance();
-    for(int i = litMan.tab.size(); i>0; --i){
-        if(litMan.choix_type(LiteraleManager::getInstance().tab[i-1]->getValue())==5){
-            progVue->item(nb_Affiche-nb-1,0)->setText((litMan.tab[i-1]->toString()));
-            progVue->item(nb_Affiche-nb-1,1)->setText(QString::number(i));
-            nb++;
+    qDebug()<<"refresh_content  : avant boucle";
+    int i = 0;
+    if (!Controleur::getInstance()->getPile().stack.empty()){
+        for(Item* it = Controleur::getInstance()->getPile().stack.begin(); it!=Controleur::getInstance()->getPile().stack.end(); ++it, i++){
+            if(LiteraleManager::getInstance().choix_type(Attributs(it->getLiterale().toString()))==5){
+                progVue->item(nb_Affiche-nb-1,0)->setText(it->getLiterale().toString());
+                progVue->item(nb_Affiche-nb-1,1)->setText(QString::number(i));
+                nb++;
+            }
         }
     }
+    std::map<QString, Atome*> M = LiteraleManager::getInstance().getMapAtom() ;
+    std::map<QString, Atome*>::const_iterator it = M.begin() ;
+    while( nb_Affiche-nb-1 >= 0 ){
+        progVue->item(nb_Affiche-nb-1,0)->setText(it->second->toString());
+        progVue->item(nb_Affiche-nb-1,1)->setText(it->first);
+        nb++;
+        ++it ;  ;
+
+          }
 }
 
+ProgWindow::~ProgWindow(){
+    MainWindow::getInstance().refresh();
+}
 
 void ProgWindow::action_save_prog(){
     bool ok = false;
-    LiteraleManager& litMan = LiteraleManager::getInstance();
-    for(int i = 0; i<nb; i++){
-        litMan.tab[progVue->item(i,1)->text().toInt(&ok,10)]=&litMan.getLit(Attributs(0,1,0,1,progVue->item(i,0)->text()));
+    //GESTION PROG
+    for(int i=0;i<nb_Affiche-LiteraleManager::getInstance().getMapAtom().size();i++){
+        //Controleur::getInstance()->getPile().stack[progVue->item(nb_Affiche-i-1,1)->text().toInt(&ok,10)].setLiterale(LiteraleManager::getInstance().getLit(progVue->item(nb_Affiche-i-1,0)->text()));
+        Program& P =(Program&) Controleur::getInstance()->getPile().stack[progVue->item(nb_Affiche-i-1,1)->text().toInt(&ok,10)].getLiterale();
+        P.modifProg(progVue->item(nb_Affiche-i-1,0)->text());
+    }
+    //GESTION VARIABLES
+    for(int i=nb_Affiche-LiteraleManager::getInstance().getMapAtom().size();i<nb_Affiche;++i){
+        QString varName = progVue->item(nb_Affiche-i-1,1)->text();
+        Literale& lit = LiteraleManager::getInstance().addLit(progVue->item(nb_Affiche-i-1,0)->text());
+        LiteraleManager::getInstance().deleteLiterale(LiteraleManager::getInstance().getAtome(varName));
+        LiteraleManager::getInstance().affect(varName,&lit);
     }
     QMessageBox::information(this,"Changement(s) effectué(s)", "Les modifications ont bien été enregistrées");
-    closeProgWindow();
+    delete this;
     qDebug()<<"action_save_prog";
 }
+

@@ -42,12 +42,12 @@ MainWindow::MainWindow()
 
     QAction *actionRedo = new QAction("&Redo", this);  // AJOUT DU "Redo"
     menuOption->addAction(actionRedo);
-    actionRedo->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\arrow_redo.png"));
+    actionRedo->setIcon(QIcon("\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\images/arrow_redo.png"));
     actionRedo->setShortcut(QKeySequence(tr("Ctrl+y")));
 
     QAction *actionUndo = new QAction("&Undo", this);  // AJOUT DU "Undo"
     menuOption->addAction(actionUndo);
-    actionUndo->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\arrow_undo.png"));
+    actionUndo->setIcon(QIcon("\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\images/arrow_undo.png"));
     actionUndo->setShortcut(QKeySequence(tr("Ctrl+z")));
 
     QMenu *menuAide = menuBar()->addMenu("&Aide");
@@ -81,6 +81,7 @@ MainWindow::MainWindow()
     controlScreen->setFixedSize(QSize(280, 300));
 
     pile = new Pile ;
+    qDebug()<<pile;
     controleur = Controleur::getInstance(LiteraleManager::getInstance() , *pile) ;
     message = new QLineEdit() ;
     commande = new QLineEdit() ;
@@ -113,17 +114,17 @@ MainWindow::MainWindow()
 
     bottomLayout->addWidget(commande);
     bottomLayout->addWidget(enter);
-    enter->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\enter-arrow.png"));
+    enter->setIcon(QIcon("\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\images/enter-arrow.png"));
     enter->setFlat(true);
     enter->setFocusPolicy(Qt::NoFocus);
 
-    connect(enter,SIGNAL(clicked(bool)),this,SLOT(getNextCommande()));
+    connect(enter,SIGNAL(clicked(bool)),this,SLOT(slot_getNextCommande()));
 
     //BOUTON PILE SETTINGS + CONNECT
-    pile_plus->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\add.png"));
+    pile_plus->setIcon(QIcon("\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\images/add.png"));
     pile_plus->setFlat(true);
     pile_plus->setFocusPolicy(Qt::NoFocus);
-    pile_moins->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\minus.png"));
+    pile_moins->setIcon(QIcon("\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\images/minus.png"));
     pile_moins->setFlat(true);
     pile_moins->setFocusPolicy(Qt::NoFocus);
 
@@ -148,7 +149,7 @@ MainWindow::MainWindow()
 
     //SOUND_LOCK SETTINGS
     sound_lock = new QPushButton();
-    sound_lock->setIcon(QIcon("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\projet_1_0\\projet_1_0\\images\\speaker.png"));
+    sound_lock->setIcon(QIcon("\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\images/speaker.png"));
     sound_lock->setFlat(true);
     sound_lock->setFocusPolicy(Qt::NoFocus);
     connect(sound_lock,SIGNAL(clicked(bool)),this,SLOT(sound_disable()));
@@ -170,7 +171,7 @@ MainWindow::MainWindow()
     
 
     //GESTION DES CONNECTS DU CONTROLSCREEN
-    connect(commande, SIGNAL (returnPressed()) , this , SLOT(getNextCommande())) ;
+    connect(commande, SIGNAL (returnPressed()) , this , SLOT(slot_getNextCommande())) ;
     connect(pile , SIGNAL (modificationEtat()) , this, SLOT(refresh())) ;
 
     //GESTION DES CONNECTS DU KEYBOARD
@@ -220,6 +221,11 @@ MainWindow::MainWindow()
 
     mainArea->setLayout(mainSet);
     setCentralWidget(mainArea);
+
+    //GESTION SAUVEGARDE CONTEXTE
+
+    connect(qApp,SIGNAL(aboutToQuit()),this,SLOT(save_context()));
+    open_context();
 }
 
 void MainWindow::afficher_APropos()
@@ -346,4 +352,49 @@ void MainWindow::pile_create(){
 void MainWindow::printText(){
     getNextCommande(text_enter);
     qDebug() << "printText()" << text_enter;
+}
+
+void MainWindow::open_context(){
+    QFile fichier("\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\save.txt");
+
+    if(!fichier.exists())
+        QMessageBox::critical(NULL,"Erreur","Le fichier de sauvegarde n'existe pas !");
+    else{
+
+        fichier.open(QIODevice::ReadOnly | QIODevice::Text);
+        QTextStream flux(&fichier);
+        QString ligne = "";
+        while(!flux.atEnd())
+        {
+            ligne = flux.readLine();
+            getNextCommande(ligne);
+        }
+
+
+        fichier.close();
+    }
+}
+
+void MainWindow::save_context(){
+    QFile fichier("C:\\Users\\Adrien\\Documents\\Adrien\\UTC\\GI 02\\LO21\\Projet\\version finale\\projet_1_0\\save.txt");
+
+    if(!fichier.exists())
+        QMessageBox::critical(NULL,"Erreur","Le fichier de sauvegarde n'existe pas !");
+    else{
+
+        fichier.open(QIODevice::WriteOnly | QIODevice::Text);
+        QTextStream flux(&fichier);
+
+        for(Item* it= (pile->stack.begin())   ; it!= (pile->stack.end()); ++it)
+        {
+
+            flux << it->getLiterale().toString();
+            flux << "\n";
+        }
+
+        fichier.close();
+
+        QMessageBox::critical(NULL,"Sauvegarde","La sauvegarde du contexte à bien été effectué !");
+    }
+
 }

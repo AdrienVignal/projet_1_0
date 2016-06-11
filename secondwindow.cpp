@@ -24,7 +24,6 @@ SecondWindow::SecondWindow(){
 
 
 void SecondWindow::send_text(){
-    MainWindow::getInstance().setTextEnter(progEdit->toPlainText());
-    MainWindow::getInstance().printText();
+    MainWindow::getInstance().getNextCommande(progEdit->toPlainText());
     this->close();
 }
