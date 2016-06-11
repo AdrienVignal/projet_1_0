@@ -16,26 +16,29 @@ QStack<Item> Memento::GetState(){
         QStack<Item> s ;
         return s ;
     }
-    if (courrant < MaxSaves && (courrant<save.size()-1) ){
-        //qDebug()<<"------------courrant = "<<courrant ;
-        //qDebug()<<"-------------id pile retour = "<<save[courrant].getStack().top().getLiterale().getValue().num ;
-         return save[courrant++].getStack();
-    }
+    LiteraleManager::getInstance().desactiveVar(save[courrant-1].getCreated()) ;
+    LiteraleManager::getInstance().activeVar(save[courrant-1].getUsed()) ;
     return save[courrant++].getStack() ;
 
 }
 
 QStack<Item> Memento::GetStateDown() {
-    if (courrant > 1)
+    if (courrant > 1) 
         courrant  = courrant -2 ;
+
+    LiteraleManager::getInstance().activeVar(save[courrant].getCreated()) ;
+    LiteraleManager::getInstance().desactiveVar(save[courrant+1].getUsed()) ;
     return save[courrant++].getStack();
 }
 
 QStack<Item> Memento::GetState0() {
+LiteraleManager::getInstance().activeVar(save[courrant-1].getCreated()) ;
+LiteraleManager::getInstance().desactiveVar(save[courrant].getUsed()) ;
 return save[courrant-1].getStack() ;
 }
 
 void Memento::addState(QStack<Item> st , QVector<Literale*> u ,QVector<Literale*> c ) {
+
     mem s(st , u , c) ;
     if (courrant == 0){
         if (save.size()==1) courrant = 1 ;

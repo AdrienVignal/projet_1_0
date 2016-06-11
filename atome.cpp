@@ -4,12 +4,12 @@
 
 
 Atome::~Atome() {
+    LiteraleManager::getInstance().deleteLiterale(lit);
 }
 
 Attributs Atome::getValue() const {
-    return lit->getValue() ;
+    return Attributs(name) ;
 }
-
 
 QString Atome::toString() const {
     return lit->toString() ;

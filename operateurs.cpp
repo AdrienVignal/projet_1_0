@@ -6,9 +6,10 @@
 //ainsi que ci necessaire une méthode check, qui vérifie si tt les condtions sont remplies pour faire le calcul
 
 void adition::operator()() {
-    Pile& P = Controleur::getInstance()->getPile() ; // accède à la pile
-    if (P.stack.size() >= 2){  //vérifie s'il y a assez de litérale pour exécuter l'instructructuon
 
+    Pile& P = Controleur::getInstance()->getPile() ; // accède à la pile
+
+    if (P.stack.size() >= 2){  //vérifie s'il y a assez de litérale pour exécuter l'instructructuon
 
         if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
             Literale& v2=P.top(); //prend la première litérale
@@ -32,7 +33,7 @@ void adition::operator()() {
             else{
                 P.push(v2);
                 if (LiteraleManager::getInstance().choix_type(P.top().getValue())==6) {
-                    Controleur::getInstance()->commande("EVAL");
+                    Controleur::getInstance()->commande("");
                     if (Controleur::getInstance()->getErreur())return ;
                 }
             }
@@ -56,8 +57,10 @@ void adition::operator()() {
     Literale& e=LiteraleManager::getInstance().addLit(res);  //création d'une nouvelle litérale à partir de res
     P.push(e);  // on push la nouvele litérale
     }
+
     else{
         P.setMessage("Erreur : pas assez d'arguments");
+        return ;
     }
 }
 
@@ -889,9 +892,9 @@ void eval::operator()() {
         Controleur::getInstance()->cancel() ;
         P.setMessage("Erreur : mauvaise syntaxe");
     }
-
+    else{
     LiteraleManager::getInstance().removeLiterale(v1);
-
+    }
 
     return ;
     }
@@ -1158,6 +1161,156 @@ void Pow::operator()() {
         Literale& e=LiteraleManager::getInstance().addLit(res);
         P.push(e);
         }
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void Aff::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=2){
+
+      if (LiteraleManager::getInstance().choix_type(P.top().getValue())!=6) {
+           P.setMessage("Erreur : mauvais arguments");
+           return ;
+       }
+    QRegExp exp("^[A-Z]([A-Z]|\\d)*$");
+    Literale& v1=P.top();
+    QString s = v1.toString() ;
+    s.remove("'") ;
+
+    if (!s.contains(exp)){
+        P.setMessage("Erreur : mauvaise expression");
+        return ; }
+
+    if (Controleur::getInstance()->estUnOperateur(s)){
+        P.setMessage("Erreur : nom deja pris");
+        return ; }
+
+    P.pop() ;
+    Literale& v2=P.top();
+    P.pop() ;
+
+    Attributs res = v2.getValue() ;
+    LiteraleManager::getInstance().removeLiterale(v1);
+    LiteraleManager::getInstance().removeLiterale(v2);
+    Literale& e=LiteraleManager::getInstance().addLit(res);
+
+    LiteraleManager::getInstance().affect(s , &e);
+    }
+
+
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+
+void Forget::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+      if (LiteraleManager::getInstance().choix_type(P.top().getValue())!=6) {
+           P.setMessage("Erreur : mauvais arguments");
+           return ;
+       }
+    Literale& v1=P.top();
+    QString s = v1.toString() ;
+    s.remove("'") ;
+    if (!LiteraleManager::getInstance().isVariable(s)){
+        P.setMessage("Erreur : variable non affectée");
+        return ; }
+
+    P.pop() ;
+    LiteraleManager::getInstance().removeLiterale(v1);
+    Atome* A = LiteraleManager::getInstance().getAtome(s) ;
+    LiteraleManager::getInstance().removeLiterale(*A);
+    }
+
+
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void dup::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+
+        Literale& v1=P.top();
+        Literale& e=LiteraleManager::getInstance().addLit(v1.getValue());
+        P.push(e);
+
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void drop::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=1){
+
+        Literale& v1=P.top();
+        P.pop() ;
+        LiteraleManager::getInstance().removeLiterale(v1);
+
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+void echange::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=2){
+
+        Literale& v1=P.top();
+        P.pop() ;
+        Literale& v2=P.top();
+        P.pop() ;
+
+        Literale& e1=LiteraleManager::getInstance().addLit(v1.getValue());
+        Literale& e2=LiteraleManager::getInstance().addLit(v2.getValue());
+        LiteraleManager::getInstance().removeLiterale(v1);
+        LiteraleManager::getInstance().removeLiterale(v2);
+        P.push(e1);
+        P.push(e2);
+
+    }
+    else{
+        P.setMessage("Erreur : pas assez d'arguments");
+    }
+}
+
+
+void vide::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    while (!P.stack.empty()){
+        Literale& v1=P.top();
+        P.pop() ;
+        LiteraleManager::getInstance().removeLiterale(v1);
+    }
+}
+
+void SI::operator()() {
+    Pile& P = Controleur::getInstance()->getPile() ;
+    if (P.stack.size() >=2){
+
+        Literale& v1=P.top();
+        P.pop() ;
+        Literale& v2=P.top();
+
+        Attributs res(0,1);
+        if (v1.getValue() == res) {
+             P.pop() ;
+             LiteraleManager::getInstance().removeLiterale(v2);
+        }
+        else{
+            Controleur::getInstance()->commande("EVAL");
+        }
+        LiteraleManager::getInstance().removeLiterale(v1);
+
     }
     else{
         P.setMessage("Erreur : pas assez d'arguments");

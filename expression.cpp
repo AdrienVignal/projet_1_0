@@ -64,7 +64,7 @@ QString convertToPolish(QString s) {
         }
 
         else{
-            if (  s[i].isDigit()){ //si on a un nombre
+            if (s[i].isDigit()){ //si on a un nombre
                 while((i<s.size()) && (!charSpe.contains(s[i]))){  //tant qu'on voit pas d'op spé, et qu'il y a des trucs
                     result.push_back(s[i]);   //on le met dans result
                     s.remove(i,1) ;          //on l'enlève de source
@@ -101,16 +101,22 @@ QString convertToPolish(QString s) {
                 }
 
                 else{
-                    if (s[i].isLetter() ){ //si on a une lettre, alors 3 cas : opérateur (opérande) ,  variable (atome) , ou racourcis d'opérateur (atome)
+
+                    if (s[i].isLetter() ){ //si on a une lettre, alors 2 cas : opérateur (opérande) ,  variable (atome)
                         QString temp ;
-                        while((i<s.size()) && !s[i].isLetterOrNumber() ){  //tant qu'on a des lettres ou des chiffres
+                        while((i<s.size()) && s[i].isLetterOrNumber() ){  //tant qu'on a des lettres ou des chiffres
                             temp.push_back(s[i]);   //on sauvegarde dans op
                             s.remove(i,1) ;          //on l'enlève de source
                         }
-
                         if (Controleur::getInstance()->estUnOperateur(temp) )
                             op = temp ;
                         else
+                            if(LiteraleManager::getInstance().isVariable(temp)){
+
+                                result.push_back(temp) ;
+                                result.push_back(" ");
+                            }
+                            else
                             return "ERROR" ;
                         if (neg){ //si il y avait - devant :
                             result.push_back("NEG ");

@@ -15,6 +15,8 @@ class Atome : public Literale {
 public:
     Attributs getValue() const ; // fct virtuelle qui renvoit les attributs de complex sous forme d'une structure attibuts pour faire des calculs
     QString toString() const ;//fct virtuelle renvoit un chaine pour afficher un complex au bon format
+    QString Name() const {return name ; }
+    Attributs getVar() const {return lit->getValue() ;  }
 };
 
 

@@ -300,5 +300,61 @@ public :
     void operator()() ;
     int arite() {return 2 ;}
 };
+
+class Aff : public operateur {
+public :
+    Aff() {}
+    virtual ~Aff() {}
+    void operator()() ;
+    int arite() {return 2 ;}
+};
+
+class Forget : public operateur {
+public :
+    Forget() {}
+    virtual ~Forget() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class dup : public operateur {
+public :
+    dup() {}
+    virtual ~dup() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class drop : public operateur {
+public :
+    drop() {}
+    virtual ~drop() {}
+    void operator()() ;
+    int arite() {return 1 ;}
+};
+
+class echange : public operateur {
+public :
+    echange() {}
+    virtual ~echange() {}
+    void operator()() ;
+    int arite() {return 2 ;}
+};
+
+class vide : public operateur {
+public :
+    vide() {}
+    virtual ~vide() {}
+    void operator()() ;
+    int arite() {return 2 ;}
+};
+
+class SI : public operateur {
+public :
+    SI() {}
+    virtual ~SI() {}
+    void operator()() ;
+    int arite() {return 2 ;}
+};
 #endif // OPERATEURS_H
 
